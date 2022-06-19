@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  server:
+    build: .
+    init: true
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    tty: true
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    volumes:
+      - .:/redis
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 5000:5000
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+    depends_on:
+      - server

@@ -1,0 +1,7 @@
+./node_modules
+./utils
+./modules
+./@types
+./readme.md
+./tsconfig.json
+./.env.sample
