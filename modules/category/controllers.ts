@@ -27,9 +27,9 @@ export const deleteCategory = async (req: Request, res: Response) => {
   const category = await Category.findById(categoryId)
   if (!category) throw new Error('Category not found')
 
-  category.deleted = true
-  const saved = await category.save()
-  return res.send(saved)
+  await Category.deleteOne({ _id: categoryId })
+
+  return res.send('Category Deleted')
 }
 
 export const getCategoriesByPost = async (req: Request, res: Response) => {}

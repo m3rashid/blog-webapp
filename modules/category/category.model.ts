@@ -3,7 +3,6 @@ import mongoose from 'mongoose'
 export interface ICategory {
   name: string
   slug: string
-  deleted: boolean
 }
 
 const categorySchema = new mongoose.Schema<ICategory>(
@@ -16,10 +15,6 @@ const categorySchema = new mongoose.Schema<ICategory>(
       type: String,
       required: true,
       unique: true,
-    },
-    deleted: {
-      type: Boolean,
-      default: false,
     },
   },
   { timestamps: true }

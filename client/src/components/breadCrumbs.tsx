@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
   crumbs: {
-    color: theme.primaryColor,
+    color: theme.colors.cyan[4],
     fontWeight: 500,
     marginBottom: theme.spacing.xl,
     marginTop: theme.spacing.xs,

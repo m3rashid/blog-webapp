@@ -2,8 +2,10 @@ import React from 'react'
 import { Box, Button, createStyles } from '@mantine/core'
 
 import PageWrapper from '../components/pageWrapper'
+import TitleSlug from '../components/post/titleSlug'
+import { PostType } from '../atoms/post'
 const CreateOrEditPost = React.lazy(
-  () => import('../components/createOrEditPost')
+  () => import('../components/post/createOrEditPost')
 )
 
 const useStyles = createStyles((theme) => ({
@@ -18,9 +20,12 @@ const useStyles = createStyles((theme) => ({
 interface IProps {}
 
 const EditPost: React.FC<IProps> = () => {
-  const post: any = []
+  const [type, setType] = React.useState<PostType>('text')
+
   // get post on load from post slug
-  const [text, setText] = React.useState(post || '')
+  const post: any = []
+  const [postTitle, setPostTitle] = React.useState('')
+  const [postSlug, setPostSlug] = React.useState('')
 
   const { classes } = useStyles()
   const moveToDraft = () => {}
@@ -32,7 +37,10 @@ const EditPost: React.FC<IProps> = () => {
         <Button onClick={moveToDraft}>Move to draft</Button>
         <Button onClick={handlePublish}>Save and Publish</Button>
       </Box>
-      <CreateOrEditPost text={text} setText={setText} />
+
+      <TitleSlug {...{ postTitle, setPostTitle, postSlug, setPostSlug }} />
+
+      {/* <CreateOrEditPost /> */}
     </PageWrapper>
   )
 }

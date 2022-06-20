@@ -4,13 +4,25 @@ import { IComment } from '../comment'
 import { IAuthor } from '../author'
 import { ICategory } from '../category'
 
+export enum POST_DATA_TYPE {
+  CODE = 'code',
+  TEXT = 'text',
+}
+
+export interface IPostData {
+  id: string
+  content: string
+  type: 'code' | 'text'
+}
+
 export interface IPost {
   tilte: string
-  body: string
+  data: IPostData[]
   bannerImageUrl: string
   comments: IComment[]
   author: IAuthor
   categories: ICategory[]
+  published: boolean
   deleted: boolean
 }
 
@@ -20,10 +32,23 @@ const postSchema = new mongoose.Schema<IPost>(
       type: String,
       required: true,
     },
-    body: {
-      type: String,
-      required: true,
-    },
+    data: [
+      {
+        id: {
+          type: String,
+          required: true,
+        },
+        content: {
+          type: String,
+          required: true,
+        },
+        type: {
+          type: String,
+          required: true,
+          enum: Object.values(POST_DATA_TYPE),
+        },
+      },
+    ],
     bannerImageUrl: {
       type: String,
       required: true,
@@ -44,6 +69,10 @@ const postSchema = new mongoose.Schema<IPost>(
         ref: 'Category',
       },
     ],
+    published: {
+      type: Boolean,
+      required: true,
+    },
     deleted: {
       type: Boolean,
       default: false,

@@ -1,5 +1,3 @@
-import { ROLE } from './user.model'
-
 export const sessions: Record<
   string,
   { sessionId: string; email: string; valid: boolean }
@@ -18,13 +16,12 @@ export function invalidateSession(sessionId: string) {
   return sessions[sessionId]
 }
 
-export function createSession(email: string, role: ROLE | 'ADMIN') {
+export function createSession(email: string) {
   const sessionId = String(Object.keys(sessions).length + 1)
   const session = {
     valid: true,
     sessionId,
     email,
-    role,
   }
   sessions[sessionId] = session
   return session

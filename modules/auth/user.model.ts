@@ -2,29 +2,23 @@ import mongoose from 'mongoose'
 
 import { IAuthor } from '../author'
 
-export enum ROLE {
-  AUTHOR = 'AUTHOR',
-  ADMIN = 'ADMIN',
-}
-
 export interface IUser {
-  password: string
   email: string
-  role: ROLE
+  password: string
   profile: IAuthor
   deleted: boolean
 }
 
 const userSchema = new mongoose.Schema<IUser>(
   {
-    password: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
       unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
     profile: {
       type: mongoose.Schema.Types.ObjectId,
