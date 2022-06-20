@@ -1,5 +1,6 @@
 import { useBooleanToggle } from '@mantine/hooks'
 import {
+  Avatar,
   Burger,
   Center,
   Container,
@@ -11,7 +12,10 @@ import {
   Transition,
 } from '@mantine/core'
 import { Moon, Sun } from 'tabler-icons-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
+
+import { authAtom } from '../../atoms/auth'
 
 export const HEADER_HEIGHT = 70
 export const useStyles = createStyles((theme) => ({
@@ -154,6 +158,7 @@ interface IProps {
 
 const TopHeader: React.FC<IProps> = ({ colorScheme, toggleColorScheme }) => {
   const [opened, toggleOpened] = useBooleanToggle(false)
+  const user = useRecoilValue(authAtom)
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { classes } = useStyles()
@@ -178,21 +183,6 @@ const TopHeader: React.FC<IProps> = ({ colorScheme, toggleColorScheme }) => {
         </div>
 
         <Group spacing={5} className={classes.links}>
-          {/* <HeaderLink
-            label="Home"
-            link="/"
-            isActive={pathname === "/" ? true : false}
-            toggleOpened={toggleOpened}
-          /> */}
-          {/* <HeaderLink
-            label="Placement"
-            link="/placement"
-            isActive={pathname === "/placement" ? true : false}
-            toggleOpened={toggleOpened}
-          /> */}
-          {/* <AboutUsDropdown />
-          <AcademicDropdown />
-          <ResearchDropdown /> */}
           <ThemeChanger />
         </Group>
 
@@ -206,21 +196,6 @@ const TopHeader: React.FC<IProps> = ({ colorScheme, toggleColorScheme }) => {
         <Transition transition="pop-top-right" duration={200} mounted={opened}>
           {(styles) => (
             <Paper className={classes.dropdown} style={{ ...styles }}>
-              {/* <HeaderLink
-                label="Home"
-                link="/"
-                isActive={pathname === "/" ? true : false}
-                toggleOpened={toggleOpened}
-              /> */}
-              {/* <HeaderLink
-                label="Placement"
-                link="/placement"
-                isActive={pathname === "/placement" ? true : false}
-                toggleOpened={toggleOpened}
-              /> */}
-              {/* <AboutUsDropdown />
-              <AcademicDropdown />
-              <ResearchDropdown /> */}
               <ThemeChanger />
             </Paper>
           )}

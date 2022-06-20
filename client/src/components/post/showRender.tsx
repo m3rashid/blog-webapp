@@ -1,7 +1,7 @@
 import React from 'react'
 import { marked } from 'marked'
-import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
+import DOMPurify from 'dompurify'
 import 'highlight.js/styles/github-dark-dimmed.css'
 import { Box, Code, createStyles } from '@mantine/core'
 
@@ -19,7 +19,6 @@ const useStyles = createStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridGap: '20px',
-    margin: '40px 0',
     color:
       theme.colorScheme === 'dark'
         ? theme.colors.gray[1]
@@ -36,6 +35,7 @@ interface IProps {
 
 const ShowRender: React.FC<IProps> = ({ data }) => {
   const { classes } = useStyles()
+
   return (
     <Box className={classes.background}>
       {data.map((section) => {
@@ -56,6 +56,8 @@ const ShowRender: React.FC<IProps> = ({ data }) => {
                 marginTop: '10px',
                 marginBottom: '10p',
                 width: '100%',
+                maxWidth: '100vw',
+                overflowX: 'auto',
               }}
             >
               {render}

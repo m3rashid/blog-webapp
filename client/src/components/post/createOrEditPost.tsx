@@ -1,5 +1,12 @@
 import React from 'react'
-import { Box, Button, createStyles, Group, Textarea } from '@mantine/core'
+import {
+  Box,
+  Button,
+  createStyles,
+  Group,
+  Paper,
+  Textarea,
+} from '@mantine/core'
 
 import { useRecoilState } from 'recoil'
 import ChooseTypeButton from './select'
@@ -8,14 +15,12 @@ import { deepClone } from '../utils'
 
 const useStyles = createStyles((theme) => ({
   textboxContainer: {
-    marginBottom: '30px',
     color:
       theme.colorScheme === 'dark'
         ? theme.colors.gray[1]
         : theme.colors.dark[5],
   },
   textBox: {
-    marginBottom: '10px',
     textarea: {
       backgroundColor:
         theme.colorScheme === 'dark'
@@ -58,7 +63,7 @@ const CreateOrEditPost: React.FC<IProps> = ({ id }) => {
           return section
         })
       })
-    }, 50)
+    }, 1000)
 
     return () => {
       clearInterval(interval)
@@ -82,10 +87,10 @@ const CreateOrEditPost: React.FC<IProps> = ({ id }) => {
   }
 
   return (
-    <>
+    <Paper shadow="xs" p="md" style={{ marginBottom: '30px' }}>
       <Group
         style={{
-          marginBottom: '5px',
+          marginBottom: '15px',
           alignItems: 'flex-end',
           justifyContent: 'flex-end',
         }}
@@ -112,7 +117,7 @@ const CreateOrEditPost: React.FC<IProps> = ({ id }) => {
           onChange={handleChange}
         />
       </Box>
-    </>
+    </Paper>
   )
 }
 

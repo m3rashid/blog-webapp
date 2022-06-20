@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 
 import './index.css'
 import App from './App'
-import RootWrapper from './components/rootWrapper'
+import RootWrapper from './components/globals/rootWrapper'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(

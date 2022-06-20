@@ -1,13 +1,12 @@
 import { Router } from 'express'
 
-import { makeSafe } from '../../utils/router'
+import { checkAuth, makeSafe } from '../../utils/router'
 import { authRateLimiter, regularRateLimiter } from '../../utils/rateLimiters'
 import {
   deleteUser,
   forgotPassword,
-  getAuthSession,
+  getUser,
   login,
-  logout,
   recoverDeletedUser,
   register,
   resetPassword,
@@ -17,10 +16,9 @@ const r = Router()
 
 r.post('/auth/login', authRateLimiter, makeSafe(login))
 r.post('/auth/register', authRateLimiter, makeSafe(register))
-r.get('/auth', regularRateLimiter, makeSafe(getAuthSession))
+r.post('/auth', checkAuth, regularRateLimiter, makeSafe(getUser))
 r.post('/auth/forgot-password', authRateLimiter /* other middlewares */)
 r.post('/auth/reset-password', authRateLimiter /* other middlewares */)
-r.post('/auth/logout', authRateLimiter, makeSafe(logout))
 
 r.post('/auth/forgot-password', authRateLimiter, makeSafe(forgotPassword))
 r.post('/auth/reset-password', authRateLimiter, makeSafe(resetPassword))

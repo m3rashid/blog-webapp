@@ -29,6 +29,7 @@ interface ISafeApiCall {
 
 export const useSafeApiCall = () => {
   const setAuthState = useSetRecoilState(authAtom)
+  const jwtToken = window.localStorage.getItem('token')
 
   const safeApiCall = async ({ endpoint, body, notif }: ISafeApiCall) => {
     try {
@@ -38,35 +39,34 @@ export const useSafeApiCall = () => {
         title: notif.loadingMsg?.title || 'In Progress',
         message: notif.loadingMsg?.message || 'Please wait...',
         autoClose: 5000,
-        disallowClose: true,
+        disallowClose: false,
       })
 
       const res = await instance.post(endpoint, JSON.stringify({ ...body }), {
         headers: {
           'Content-Type': 'application/json',
-          // authorization: token || "",
+          authorization: jwtToken ?? '',
         },
       })
 
       updateNotification({
         id: notif.id,
         color: 'teal',
-        title:
-          notif.successMsg?.title ||
-          res.data.message ||
-          'Successfully completed task',
+        title: notif.successMsg?.title || res.data.message || 'Successful',
         message:
           notif.successMsg?.message ||
           res.data.message ||
-          'Your defined task was successfully completed',
+          'Your request was successful',
         icon: <CircleCheck />,
         autoClose: 5000,
+        disallowClose: false,
       })
 
       return res
     } catch (err: any) {
       if (err.response.status === 401) {
-        setAuthState({ isAuthenticated: false, user: null, role: '' })
+        setAuthState({ isAuthenticated: false, user: null })
+        window.localStorage.removeItem('token')
         return null
       }
 
@@ -74,12 +74,13 @@ export const useSafeApiCall = () => {
       updateNotification({
         id: notif.id,
         color: 'red',
-        title: notif.errorMsg?.title || 'Error in getting response',
+        title: notif.errorMsg?.title || 'Error',
         message:
           notif.errorMsg?.message ||
           'An error occurred while getting response from server. Please try again later.',
         icon: <Error404 />,
         autoClose: 5000,
+        disallowClose: false,
       })
       return null
     }

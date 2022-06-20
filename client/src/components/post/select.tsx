@@ -6,10 +6,6 @@ import { PostType } from '../../atoms/post'
 const useStyles = createStyles((theme) => ({
   select: {
     flexGrow: 1,
-    input: {
-      borderWidth: '1px',
-      borderColor: theme.colors.cyan[7],
-    },
   },
 }))
 

@@ -8,6 +8,7 @@ export interface IAppConfig {
 
 const devConfig: IAppConfig = {
   cors: {
+    credentials: true,
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200,
   },
@@ -18,6 +19,7 @@ const devConfig: IAppConfig = {
 
 const prodConfig: IAppConfig = {
   cors: {
+    credentials: true,
     origin: [],
     optionsSuccessStatus: 200,
   },

@@ -8,7 +8,8 @@ import {
   Group,
 } from '@mantine/core'
 
-import PageWrapper from '../components/pageWrapper'
+import PageWrapper from '../components/globals/pageWrapper'
+import { Link } from 'react-router-dom'
 
 export const useStyles = createStyles((theme) => ({
   root: {
@@ -25,7 +26,6 @@ export const useStyles = createStyles((theme) => ({
       theme.colorScheme === 'dark'
         ? theme.colors.dark[4]
         : theme.colors.gray[2],
-
     [theme.fn.smallerThan('sm')]: {
       fontSize: 120,
     },
@@ -35,7 +35,6 @@ export const useStyles = createStyles((theme) => ({
     textAlign: 'center',
     fontWeight: 900,
     fontSize: 38,
-
     [theme.fn.smallerThan('sm')]: {
       fontSize: 32,
     },
@@ -66,9 +65,11 @@ const NotFound = () => {
           address, or the page has been moved to another URL.
         </Text>
         <Group position="center">
-          <Button variant="subtle" size="md">
-            Take me back to home page
-          </Button>
+          <Link to="/">
+            <Button variant="subtle" size="md">
+              Take me back to home page
+            </Button>
+          </Link>
         </Group>
       </Container>
     </PageWrapper>

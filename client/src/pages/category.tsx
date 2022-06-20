@@ -1,6 +1,6 @@
-import { Box, Group, Loader, SimpleGrid, Stack } from '@mantine/core'
+import { Box, Group, SimpleGrid, Stack } from '@mantine/core'
 import React from 'react'
-import PageWrapper from '../components/pageWrapper'
+import PageWrapper from '../components/globals/pageWrapper'
 
 interface IProps {}
 

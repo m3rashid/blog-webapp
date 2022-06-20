@@ -10,7 +10,7 @@ import { ModalsProvider } from '@mantine/modals'
 import { NotificationsProvider } from '@mantine/notifications'
 
 import ScrollToTop from './scrollToTop'
-import TopHeader from './header'
+import TopHeader from '../globals/header'
 import { BrowserRouter } from 'react-router-dom'
 import Footer from './footer'
 

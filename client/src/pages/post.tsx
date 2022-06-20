@@ -1,10 +1,10 @@
-import { Grid, Group, Loader, Stack } from '@mantine/core'
+import { Grid, Group, Stack } from '@mantine/core'
 import React from 'react'
 
 import Author from '../components/author'
 import Categories from '../components/categories'
 import Comments from '../components/comments'
-import PageWrapper from '../components/pageWrapper'
+import PageWrapper from '../components/globals/pageWrapper'
 import PostDetail from '../components/postDetail'
 import RelatedPosts from '../components/relatedPosts'
 const CreateComment = React.lazy(() => import('../components/createComment'))
@@ -12,11 +12,11 @@ const CreateComment = React.lazy(() => import('../components/createComment'))
 interface IProps {}
 
 const Post: React.FC<IProps> = () => {
-  const post: any = ''
+  // const post: any = ''
 
-  const postTitle = post.title || 'Post'
-  const keywords = postTitle.split(' ')
-  const result = keywords.filter((word: string) => word.length > 4)
+  // const postTitle = post.title || 'Post'
+  // const keywords = postTitle.split(' ')
+  // const result = keywords.filter((word: string) => word.length > 4)
 
   return (
     <PageWrapper>
@@ -54,25 +54,3 @@ const Post: React.FC<IProps> = () => {
 }
 
 export default Post
-
-// export async function getStaticProps({ params }: { params: { slug: string } }) {
-//   const data = await getPostDetails(params.slug)
-//   return {
-//     props: {
-//       post: data,
-//     },
-//     revalidate: 100,
-//   }
-// }
-
-// export async function getStaticPaths() {
-//   const posts = await getPosts()
-//   return {
-//     paths: posts.map(({ node: { slug } }: { node: { slug: string } }) => ({
-//       params: {
-//         slug,
-//       },
-//     })),
-//     fallback: true,
-//   }
-// }

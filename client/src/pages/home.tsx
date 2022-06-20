@@ -1,6 +1,6 @@
 import { Box } from '@mantine/core'
 import Hero from '../components/hero'
-import PageWrapper from '../components/pageWrapper'
+import PageWrapper from '../components/globals/pageWrapper'
 
 interface IProps {}
 

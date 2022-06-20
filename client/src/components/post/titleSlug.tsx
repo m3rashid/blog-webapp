@@ -1,4 +1,4 @@
-import { createStyles, Group, TextInput } from '@mantine/core'
+import { createStyles, Group, Paper, TextInput } from '@mantine/core'
 import React from 'react'
 import { Article, Webhook } from 'tabler-icons-react'
 
@@ -11,10 +11,6 @@ const useStyles = createStyles((theme) => ({
   },
   input: {
     flexGrow: 1,
-    input: {
-      borderWidth: '1px',
-      borderColor: theme.colors.cyan[7],
-    },
   },
 }))
 
@@ -34,26 +30,28 @@ const TitleSlug: React.FC<IProps> = ({
   const { classes } = useStyles()
 
   return (
-    <Group style={{ marginBottom: '30px' }}>
-      <TextInput
-        name="postTitle"
-        value={postTitle}
-        required
-        icon={<Article />}
-        className={classes.input}
-        onChange={(e: any) => setPostTitle(e.target.value)}
-        placeholder="Enter Post title"
-      />
-      <TextInput
-        name="postSlug"
-        value={postSlug}
-        required
-        icon={<Webhook />}
-        className={classes.input}
-        onChange={(e: any) => setPostSlug(e.target.value)}
-        placeholder="Enter Post slug"
-      />
-    </Group>
+    <Paper shadow="xs" p="md" style={{ marginBottom: '30px' }}>
+      <Group>
+        <TextInput
+          name="postTitle"
+          value={postTitle}
+          required
+          icon={<Article />}
+          className={classes.input}
+          onChange={(e: any) => setPostTitle(e.target.value)}
+          placeholder="Enter Post title"
+        />
+        <TextInput
+          name="postSlug"
+          value={postSlug}
+          required
+          icon={<Webhook />}
+          className={classes.input}
+          onChange={(e: any) => setPostSlug(e.target.value)}
+          placeholder="Enter Post slug"
+        />
+      </Group>
+    </Paper>
   )
 }
 

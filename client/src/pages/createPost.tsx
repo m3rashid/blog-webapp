@@ -1,14 +1,16 @@
 import React from 'react'
 import { nanoid } from 'nanoid'
-import { useRecoilState } from 'recoil'
-import { Box, Button, createStyles, Group } from '@mantine/core'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { Box, Button, createStyles, Group, Paper, Title } from '@mantine/core'
 
+import { authAtom } from '../atoms/auth'
+import { useNavigate } from 'react-router-dom'
 import { postAtom, PostType } from '../atoms/post'
-import PageWrapper from '../components/pageWrapper'
+import { useSafeApiCall } from '../api/safeApiCall'
 import TitleSlug from '../components/post/titleSlug'
-import ChooseTypeButton from '../components/post/select'
 import ShowRender from '../components/post/showRender'
-
+import ChooseTypeButton from '../components/post/select'
+import PageWrapper from '../components/globals/pageWrapper'
 const CreateOrEditPost = React.lazy(
   () => import('../components/post/createOrEditPost')
 )
@@ -32,14 +34,25 @@ const useStyles = createStyles((theme) => ({
 interface IProps {}
 
 const CreatePost: React.FC<IProps> = () => {
+  const user = useRecoilValue(authAtom)
+  const navigate = useNavigate()
+
+  React.useEffect(() => {
+    if (!user.isAuthenticated) {
+      navigate('/auth')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const [data, setData] = useRecoilState(postAtom)
   const [type, setType] = React.useState<PostType>('text')
   const [postTitle, setPostTitle] = React.useState('')
   const [postSlug, setPostSlug] = React.useState('')
 
   const { classes } = useStyles()
+  const { safeApiCall } = useSafeApiCall()
 
-  const saveAndPublish = () => {
+  const saveAndPublish = async () => {
     console.log({ data, postTitle, postSlug })
   }
 
@@ -64,12 +77,16 @@ const CreatePost: React.FC<IProps> = () => {
         <CreateOrEditPost key={section.id} id={section.id} />
       ))}
 
-      <Group style={{ alignItems: 'flex-end' }}>
-        <ChooseTypeButton value={type} setValue={setType} labelType="new" />
-        <Button onClick={handleAddSection}>Add Section</Button>
-      </Group>
+      <Paper shadow="xs" p="md">
+        <Group style={{ alignItems: 'flex-end' }}>
+          <ChooseTypeButton value={type} setValue={setType} labelType="new" />
+          <Button onClick={handleAddSection}>Add Section</Button>
+        </Group>
+      </Paper>
 
-      <ShowRender data={data} />
+      <Paper shadow="xs" p="xs" style={{ marginTop: '30px' }}>
+        <ShowRender data={data} />
+      </Paper>
     </PageWrapper>
   )
 }

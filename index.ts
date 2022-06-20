@@ -15,11 +15,11 @@ app.use(helmet())
 app.use(xss())
 app.use(cors(appConfig.cors))
 // app.use(cookieParser())
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 mongoose.set('debug', !isProduction)
 
-app.use(auth.deserializeUser)
 app.use(auth.authRouter)
 app.use(author.authorRouter)
 app.use(category.categoryRouter)
