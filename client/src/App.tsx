@@ -6,15 +6,15 @@ import { useSetRecoilState } from 'recoil'
 import { useSafeApiCall } from './api/safeApiCall'
 import { authAtom } from './atoms/auth'
 import PageWrapper from './components/globals/pageWrapper'
-const NotFound = React.lazy(() => import('./pages/404'))
-const Auth = React.lazy(() => import('./pages/auth'))
-const AuthorProfile = React.lazy(() => import('./pages/authorProfile'))
-const Category = React.lazy(() => import('./pages/category'))
-const CreateProfile = React.lazy(() => import('./pages/createProfile'))
-const CreatePost = React.lazy(() => import('./pages/createPost'))
-const EditPost = React.lazy(() => import('./pages/editPost'))
-const Home = React.lazy(() => import('./pages/home'))
-const Post = React.lazy(() => import('./pages/post'))
+import NotFound from './pages/404'
+import Auth from './pages/auth'
+import AuthorProfile from './pages/authorProfile'
+import Category from './pages/category'
+import CreateProfile from './pages/createProfile'
+import CreatePost from './pages/createPost'
+import EditPost from './pages/editPost'
+import Home from './pages/home'
+import Post from './pages/post'
 
 const App = () => {
   const { safeApiCall } = useSafeApiCall()

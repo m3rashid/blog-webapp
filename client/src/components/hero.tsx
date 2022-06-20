@@ -1,43 +1,54 @@
-import { Box, Group, Header, Image, Text, Title } from '@mantine/core'
 import React from 'react'
+import { Box, Group, Image, Text, Title } from '@mantine/core'
 
 interface IProps {}
 
 const Hero: React.FC<IProps> = () => {
   return (
     <Group
-      style={{
+      sx={(theme) => ({
         flex: 1,
         alignItems: 'center',
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        gap: '16px',
-      }}
+        gap: '32px',
+        margin: '50px 0',
+        [theme.fn.smallerThan('sm')]: {
+          flexDirection: 'column',
+        },
+      })}
     >
-      <Box
-        style={{
-          flex: 1,
-        }}
-      >
-        <Title order={2}>
-          <Text component="span" style={{ textAlign: 'center' }}>
+      <Box style={{ flex: 1 }}>
+        <Title
+          order={2}
+          style={{ alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text
+            sx={(theme) => ({
+              fontSize: '3rem',
+              color:
+                theme.colorScheme === 'dark'
+                  ? theme.colors.gray[1]
+                  : theme.colors.dark[5],
+            })}
+          >
             Cubicle
           </Text>
-          <br />
           <Text
-            component="span"
-            style={{ textAlign: 'center' }}
-            color="cyan.400"
+            sx={(theme) => ({ fontSize: '2.5rem', color: theme.primaryColor })}
           >
             Welcomes you
           </Text>
         </Title>
-        <Text>
+        <Text style={{ marginTop: '16px', fontSize: '1.2rem' }}>
           Cubicle is an online portal for techies which mainly focuses on the
           life of programmers in general. It also features coding tips, tricks
           and motivation
         </Text>
       </Box>
-      <Image alt="Login Image" fit="cover" src="/hero.svg" />
+      <Box style={{ flex: 1 }}>
+        <Image alt="Login Image" fit="cover" src="/hero.svg" />
+      </Box>
     </Group>
   )
 }
