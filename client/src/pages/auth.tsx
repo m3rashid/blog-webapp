@@ -37,7 +37,7 @@ const Auth = () => {
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
 
-  const { safeApiCall } = useSafeApiCall()
+  const { safeApiCall, loading } = useSafeApiCall()
 
   const handleChangeAuthType = () => {
     if (authType === 'login') setAuthType('register')
@@ -63,7 +63,7 @@ const Auth = () => {
     const res = await safeApiCall({
       endpoint: `/auth/${authType}`,
       body: values,
-      notif: { id: 'auth' },
+      notif: { id: 'auth', show: true },
     })
 
     if (!res) return // error
@@ -108,7 +108,7 @@ const Auth = () => {
             <Checkbox label="Remember me" />
             <Anchor size="sm">Forgot password?</Anchor>
           </Group>
-          <Button fullWidth mt="xl" onClick={handleSubmit}>
+          <Button fullWidth mt="xl" onClick={handleSubmit} loading={loading}>
             {authType === 'login' ? 'Sign in' : 'Sign up'}
           </Button>
           <Text color="dimmed" size="sm" align="center" mt={10}>

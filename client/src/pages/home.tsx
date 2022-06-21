@@ -1,15 +1,28 @@
 import React from 'react'
-import { Box, Grid } from '@mantine/core'
+import { Box, createStyles, Group, SimpleGrid } from '@mantine/core'
 import Hero from '../components/hero'
 import PageWrapper from '../components/globals/pageWrapper'
 import { useRecoilValue } from 'recoil'
 import { postsForCardAtom } from '../atoms/postCard'
 import PostCard from '../components/post/postcard'
+import Categories from '../components/categories'
+import { useStyles } from './post'
 
 interface IProps {}
 
+const useThisPageStyles = createStyles((theme) => ({
+  inner: {
+    gridTemplateColumns: '1fr 1fr',
+    [theme.fn.smallerThan('sm')]: {
+      gridTemplateColumns: '1fr',
+    },
+  },
+}))
+
 const Home: React.FC<IProps> = () => {
   const posts = useRecoilValue(postsForCardAtom)
+  const { classes } = useStyles()
+  const { classes: thisPageClasses } = useThisPageStyles()
 
   return (
     <PageWrapper>
@@ -52,17 +65,25 @@ const Home: React.FC<IProps> = () => {
       <Box style={{ padding: '10px', marginBottom: '20px' }}>
         <Hero />
       </Box>
-      <Grid columns={2} style={{ gap: '10px' }}>
-        {posts.map((post) => (
-          <PostCard
-            key={post._id}
-            categories={post.categories.map((c) => c.name)}
-            image={post.bannerImageUrl}
-            title={post.title}
-            slug={post.slug}
-          />
-        ))}
-      </Grid>
+
+      <Group style={{ alignItems: 'flex-start' }}>
+        <SimpleGrid spacing={20} className={classes.firstChild}>
+          <SimpleGrid className={thisPageClasses.inner} spacing={20}>
+            {posts.map((post) => (
+              <PostCard
+                key={post._id}
+                categories={post.categories.map((c) => c.name)}
+                image={post.bannerImageUrl}
+                title={post.title}
+                slug={post.slug}
+              />
+            ))}
+          </SimpleGrid>
+        </SimpleGrid>
+        <SimpleGrid spacing={20} className={classes.secondChild}>
+          <Categories />
+        </SimpleGrid>
+      </Group>
     </PageWrapper>
   )
 }

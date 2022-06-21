@@ -1,4 +1,13 @@
-import { Grid, Group, Stack } from '@mantine/core'
+import {
+  Box,
+  createStyles,
+  Group,
+  Image,
+  Loader,
+  Paper,
+  SimpleGrid,
+  Title,
+} from '@mantine/core'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useSafeApiCall } from '../api/safeApiCall'
@@ -7,7 +16,7 @@ import Author from '../components/author'
 import Categories from '../components/categories'
 import Comments from '../components/comments'
 import PageWrapper from '../components/globals/pageWrapper'
-import PostDetail from '../components/postDetail'
+import ShowRender from '../components/post/showRender'
 import RelatedPosts from '../components/relatedPosts'
 import { IAuthor, ICategory } from '../types'
 const CreateComment = React.lazy(() => import('../components/createComment'))
@@ -26,11 +35,47 @@ export interface IPost {
   updatedAt?: string
 }
 
+export const useStyles = createStyles((theme) => ({
+  firstChild: {
+    width: '64%',
+    [theme.fn.smallerThan('sm')]: {
+      width: '100%',
+    },
+  },
+  secondChild: {
+    width: '33%',
+    [theme.fn.smallerThan('sm')]: {
+      width: '100%',
+    },
+  },
+  title: {
+    fontFamily: theme.fontFamily,
+    fontSize: 50,
+    wordBreak: 'break-all',
+    whiteSpace: 'break-spaces',
+    [theme.fn.smallerThan('sm')]: {
+      fontSize: 25,
+    },
+  },
+  titleBox: {
+    width: '64%',
+    [theme.fn.smallerThan('sm')]: {
+      width: '100%',
+    },
+  },
+  lowerGrid: {
+    [theme.fn.smallerThan('sm')]: {
+      width: '100%',
+    },
+  },
+}))
+
 interface IProps {}
 
 const Post: React.FC<IProps> = () => {
   const { slug } = useParams()
   const { safeApiCall } = useSafeApiCall()
+  const { classes } = useStyles()
   const [postDetail, setPostDetail] = React.useState<IPost>()
 
   const getPost = async () => {
@@ -40,12 +85,17 @@ const Post: React.FC<IProps> = () => {
       notif: { id: 'get-post' },
     })
     if (!res) return
-    console.log(res.data)
+    setPostDetail(res.data)
   }
 
   React.useEffect(() => {
     getPost().then().catch()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug])
+
+  if (!postDetail) {
+    return <Loader />
+  }
 
   // const postTitle = post.title || 'Post'
   // const keywords = postTitle.split(' ')
@@ -70,18 +120,30 @@ const Post: React.FC<IProps> = () => {
         <meta name="og:image" content={post.featuredImage} />
         <meta name="twitter:image" content={post.featuredImage} />
       </Head> */}
-      <Grid>
-        <Group>
-          <PostDetail />
-          <Comments />
-        </Group>
-        <Stack spacing={6}>
-          <Author />
-          <RelatedPosts />
+      <Box className={classes.titleBox}>
+        <Title className={classes.title} my={10}>
+          {postDetail.title}
+        </Title>
+      </Box>
+
+      <Group style={{ alignItems: 'flex-start' }}>
+        <SimpleGrid spacing={20} className={classes.firstChild}>
+          <Paper shadow="xs" radius="md">
+            <Image src={postDetail.bannerImageUrl} radius="md" />
+            <Box p="xs">
+              <ShowRender data={postDetail.data} />
+            </Box>
+          </Paper>
+          <Comments comments={postDetail.comments} />
+        </SimpleGrid>
+
+        <SimpleGrid spacing={20} className={classes.secondChild}>
+          <Author author={postDetail.author as IAuthor} />
+          <RelatedPosts slug={slug as string} />
           <Categories />
-          <CreateComment />
-        </Stack>
-      </Grid>
+          <CreateComment slug={postDetail.slug} />
+        </SimpleGrid>
+      </Group>
     </PageWrapper>
   )
 }

@@ -77,7 +77,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
 
   const [authorData, setAuthorData] = React.useState<IAuthor>(initialState)
 
-  const { safeApiCall } = useSafeApiCall()
+  const { safeApiCall, loading } = useSafeApiCall()
 
   const handleChange = (
     e:
@@ -104,7 +104,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
     const res = await safeApiCall({
       body: authorData,
       endpoint: '/author/create',
-      notif: { id: 'create-author' },
+      notif: { id: 'create-author', show: true },
     })
     if (!res) return
     setAuthorData(initialState)
@@ -244,7 +244,9 @@ const CreateEditProfile: React.FC<IProps> = () => {
           />
         </SimpleGrid>
         <Group style={{ marginTop: '15px', justifyContent: 'flex-end' }}>
-          <Button onClick={handleAddAuthor}>Save Author Profile</Button>
+          <Button onClick={handleAddAuthor} loading={loading}>
+            Save Author Profile
+          </Button>
         </Group>
       </Paper>
     </PageWrapper>

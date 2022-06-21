@@ -5,7 +5,6 @@ import { IPost } from '../post'
 export interface IComment {
   name: string
   comment: string
-  post: IPost
 }
 
 const commentSchema = new mongoose.Schema<IComment>(
@@ -17,10 +16,6 @@ const commentSchema = new mongoose.Schema<IComment>(
     comment: {
       type: String,
       required: true,
-    },
-    post: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Post',
     },
   },
   { timestamps: true }

@@ -17,6 +17,7 @@ import Home from './pages/home'
 import Post from './pages/post'
 import { categoryAtom } from './atoms/categories'
 import { postsForCardAtom } from './atoms/postCard'
+import MyPosts from './pages/myPosts'
 
 const App = () => {
   const { safeApiCall } = useSafeApiCall()
@@ -88,8 +89,8 @@ const App = () => {
           <Route path="/auth" element={<Auth />} />
           <Route path="/author/me" element={<AuthorProfile />} />
           <Route path="/author/me/create" element={<CreateProfile />} />
-          <Route path="/author/me/edit" element={<></>} />
-          <Route path="/author/me/posts" element={<></>} />
+          <Route path="/author/me/edit/:slug" element={<></>} />
+          <Route path="/author/me/posts" element={<MyPosts />} />
           <Route path="/author/:slug" element={<AuthorProfile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -25,7 +25,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 const CreateCategoryModal: React.FC<IProps> = ({ modalOpen, setModalOpen }) => {
-  const { safeApiCall } = useSafeApiCall()
+  const { safeApiCall, loading } = useSafeApiCall()
   const [category, setCategory] = React.useState({ name: '', slug: '' })
   const { classes } = useStyles()
 
@@ -38,7 +38,7 @@ const CreateCategoryModal: React.FC<IProps> = ({ modalOpen, setModalOpen }) => {
     const res = await safeApiCall({
       body: category,
       endpoint: '/category/create',
-      notif: { id: 'create-category' },
+      notif: { id: 'create-category', show: true },
     })
 
     if (!res) return
@@ -75,7 +75,11 @@ const CreateCategoryModal: React.FC<IProps> = ({ modalOpen, setModalOpen }) => {
           onChange={handleChange}
           placeholder="Enter slug (unique) for the category"
         />
-        <Button className={classes.input} onClick={handleCreateCategory}>
+        <Button
+          className={classes.input}
+          onClick={handleCreateCategory}
+          loading={loading}
+        >
           Create Category
         </Button>
       </SimpleGrid>

@@ -23,7 +23,7 @@ const CreateOrEditPost = React.lazy(
   () => import('../components/post/createOrEditPost')
 )
 
-const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme) => ({
   buttonTop: {
     display: 'flex',
     gap: '10px',
@@ -85,7 +85,7 @@ const CreatePost: React.FC<IProps> = () => {
     React.useState<IPostMeta>(postMetaInitialState)
 
   const { classes } = useStyles()
-  const { safeApiCall } = useSafeApiCall()
+  const { safeApiCall, loading } = useSafeApiCall()
 
   const saveAndPublish = async () => {
     const res = await safeApiCall({
@@ -99,7 +99,7 @@ const CreatePost: React.FC<IProps> = () => {
         published: publish,
       },
       endpoint: '/post/create',
-      notif: { id: 'create-post' },
+      notif: { id: 'create-post', show: true },
     })
 
     if (!res) return
@@ -114,7 +114,7 @@ const CreatePost: React.FC<IProps> = () => {
   return (
     <PageWrapper>
       <Box className={classes.buttonTop}>
-        <Button onClick={saveAndPublish}>
+        <Button onClick={saveAndPublish} loading={loading}>
           Save {publish ? ' and Publish' : ' as draft'}
         </Button>
         <Switch

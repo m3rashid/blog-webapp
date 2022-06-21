@@ -61,7 +61,6 @@ const PostCard: React.FC<IProps> = ({ image, title, categories, slug }) => {
           theme.colorScheme === 'dark'
             ? `linear-gradient(to bottom, rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.5) 100%), url(${image})`
             : `linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.4) 100%), url(${image})`,
-        width: '320px',
       })}
       className={classes.card}
     >

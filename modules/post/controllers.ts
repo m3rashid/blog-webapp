@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { HydratedDocument } from 'mongoose'
+import mongoose, { HydratedDocument } from 'mongoose'
 import { IPost, Post } from './post.model'
 
 export const createPost = async (req: Request, res: Response) => {
@@ -18,7 +18,14 @@ export const createPost = async (req: Request, res: Response) => {
   res.status(201).json(saved)
 }
 
-export const editPost = async (req: Request, res: Response) => {}
+export const editPost = async (req: Request, res: Response) => {
+  const { postId, data, published } = req.body
+  const post = await Post.findById(postId)
+  if (!post) throw new Error('Post not found')
+
+  const updated = await post.updateOne({ data, published })
+  res.status(200).json(updated)
+}
 
 export const deletePost = async (req: Request, res: Response) => {
   const { slug } = req.body
@@ -90,15 +97,115 @@ export const getPostDetails = async (req: Request, res: Response) => {
         categories: { name: 1, slug: 1 },
         createdAt: 1,
         updatedAt: 1,
+        published: 1,
       },
     },
   ])
-  return res.status(200).json(post)
+  return res.status(200).json(post[0])
 }
 
 export const getAuthorPosts = async (req: Request, res: Response) => {
-  // get all posts draft or not
-  const { id } = req.body
-  const posts = await Post.find({ author: id })
+  const { authorId } = req.body
+  const posts = await Post.aggregate([
+    // @ts-ignore
+    { $match: { author: new mongoose.Types.ObjectId(authorId) } },
+    {
+      $lookup: {
+        from: 'authors',
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author',
+      },
+    },
+    { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categories',
+        foreignField: '_id',
+        as: 'categories',
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        slug: 1,
+        published: 1,
+        categories: { name: 1, slug: 1 },
+      },
+    },
+  ])
+  return res.status(200).json(posts)
+}
+
+export const getRelatedPosts = async (req: Request, res: Response) => {
+  const { slug } = req.body
+
+  const posts = await Post.aggregate([
+    // @ts-ignore
+    { $match: { slug: 'mantine', published: true } },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categories',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        category: { name: 1, slug: 1, _id: 1 },
+      },
+    },
+    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: 'posts',
+        localField: 'category._id',
+        foreignField: 'categories',
+        as: 'posts',
+      },
+    },
+    {
+      $project: {
+        posts: { _id: 1, title: 1, slug: 1, bannerImageUrl: 1, createdAt: 1 },
+      },
+    },
+    {
+      $unwind: { path: '$posts', preserveNullAndEmptyArrays: true },
+    },
+    {
+      $project: {
+        _id: '$posts._id',
+        title: '$posts.title',
+        slug: '$posts.slug',
+        bannerImageUrl: '$posts.bannerImageUrl',
+        createdAt: '$posts.createdAt',
+      },
+    },
+    {
+      $group: {
+        _id: {
+          _id: '$_id',
+          slug: '$slug',
+          title: '$title',
+          bannerImageUrl: '$bannerImageUrl',
+          createdAt: '$createdAt',
+        },
+      },
+    },
+    { $limit: 5 },
+    {
+      $project: {
+        _id: '$_id._id',
+        title: '$_id.title',
+        slug: '$_id.slug',
+        bannerImageUrl: '$_id.bannerImageUrl',
+        createdAt: '$_id.createdAt',
+      },
+    },
+  ])
+
   return res.status(200).json(posts)
 }

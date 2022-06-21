@@ -31,6 +31,62 @@ import { IAuthor } from '../types'
 
 interface IProps {}
 
+export const AuthorSocials: React.FC<{ authorDetails: IAuthor }> = ({
+  authorDetails,
+}) => {
+  return (
+    <Group style={{ marginTop: '20px' }}>
+      {authorDetails.website && (
+        <Anchor<'a'> href={authorDetails.website} target="_blank">
+          <World />
+        </Anchor>
+      )}
+      {authorDetails.linkedinUrl && (
+        <Anchor<'a'>
+          href={`https://linkedin.com/in/${authorDetails.linkedinUrl}`}
+          target="_blank"
+        >
+          <BrandLinkedin />
+        </Anchor>
+      )}
+      {authorDetails.githubUrl && (
+        <Anchor<'a'>
+          href={`https://github.com/${authorDetails.githubUrl}`}
+          target="_blank"
+        >
+          <BrandGithub />
+        </Anchor>
+      )}
+      {authorDetails.twitterUrl && (
+        <Anchor<'a'>
+          href={`https://twitter.com/${authorDetails.twitterUrl}`}
+          target="_blank"
+        >
+          <BrandTwitter />
+        </Anchor>
+      )}
+      {authorDetails.youtubeUrl && (
+        <Anchor<'a'> href={authorDetails.youtubeUrl} target="_blank">
+          <BrandYoutube />
+        </Anchor>
+      )}
+      {authorDetails.instagramUrl && (
+        <Anchor<'a'>
+          href={`https://instagram.com/${authorDetails.instagramUrl}`}
+          target="_blank"
+        >
+          <BrandInstagram />
+        </Anchor>
+      )}
+      {authorDetails.facebookUrl && (
+        <Anchor<'a'> href={authorDetails.facebookUrl} target="_blank">
+          <BrandFacebook />
+        </Anchor>
+      )}
+    </Group>
+  )
+}
+
 const AuthorProfile: React.FC<IProps> = () => {
   const user = useRecoilValue(authAtom)
   const navigate = useNavigate()
@@ -69,25 +125,37 @@ const AuthorProfile: React.FC<IProps> = () => {
 
   return (
     <PageWrapper>
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <Group style={{ gap: 50, marginBottom: '20px' }}>
+      <Paper
+        withBorder
+        shadow="md"
+        p={30}
+        mt={30}
+        radius="md"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Group
+          style={{ gap: 30, marginBottom: '20px', justifyContent: 'center' }}
+        >
           <Avatar src={authorDetails.avatar} size={200} radius={100} />
           <Box>
-            <Box>
-              <Title sx={(theme) => ({ fontFamily: theme.fontFamily })}>
-                {authorDetails.name}
-              </Title>
-              <Text style={{ fontSize: '1.2rem', fontWeight: 600 }}>
-                @{authorDetails.slug}
-              </Text>
-            </Box>
-            <Box
-              my={10}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(marked(authorDetails.bio)),
-              }}
-            />
-            <Text>
+            <Title
+              align="center"
+              sx={(theme) => ({ fontFamily: theme.fontFamily })}
+            >
+              {authorDetails.name}
+            </Title>
+            <Text
+              align="center"
+              style={{ fontSize: '1.2rem', fontWeight: 600 }}
+            >
+              @{authorDetails.slug}
+            </Text>
+            <AuthorSocials authorDetails={authorDetails} />
+            <Text style={{ marginTop: '15px' }}>
               Joined on : &nbsp;
               {dayjs(authorDetails.createdAt).format('dddd, DD MMMM YYYY')}
             </Text>
@@ -95,57 +163,14 @@ const AuthorProfile: React.FC<IProps> = () => {
               Last Updated on: &nbsp;
               {dayjs(authorDetails.updatedAt).format('dddd, DD MMMM YYYY')}
             </Text>
-            <Group style={{ marginTop: '20px' }}>
-              {authorDetails.website && (
-                <Anchor<'a'> href={authorDetails.website} target="_blank">
-                  <World />
-                </Anchor>
-              )}
-              {authorDetails.linkedinUrl && (
-                <Anchor<'a'>
-                  href={`https://linkedin.com/in/${authorDetails.linkedinUrl}`}
-                  target="_blank"
-                >
-                  <BrandLinkedin />
-                </Anchor>
-              )}
-              {authorDetails.githubUrl && (
-                <Anchor<'a'>
-                  href={`https://github.com/${authorDetails.githubUrl}`}
-                  target="_blank"
-                >
-                  <BrandGithub />
-                </Anchor>
-              )}
-              {authorDetails.twitterUrl && (
-                <Anchor<'a'>
-                  href={`https://twitter.com/${authorDetails.twitterUrl}`}
-                  target="_blank"
-                >
-                  <BrandTwitter />
-                </Anchor>
-              )}
-              {authorDetails.youtubeUrl && (
-                <Anchor<'a'> href={authorDetails.youtubeUrl} target="_blank">
-                  <BrandYoutube />
-                </Anchor>
-              )}
-              {authorDetails.instagramUrl && (
-                <Anchor<'a'>
-                  href={`https://instagram.com/${authorDetails.instagramUrl}`}
-                  target="_blank"
-                >
-                  <BrandInstagram />
-                </Anchor>
-              )}
-              {authorDetails.facebookUrl && (
-                <Anchor<'a'> href={authorDetails.facebookUrl} target="_blank">
-                  <BrandFacebook />
-                </Anchor>
-              )}
-            </Group>
           </Box>
         </Group>
+        <Box
+          my={10}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(marked(authorDetails.bio)),
+          }}
+        />
       </Paper>
     </PageWrapper>
   )

@@ -1,23 +1,27 @@
-import { Avatar, Box, Title } from '@mantine/core'
+import { Avatar, Box, Group, Paper, Text, Title } from '@mantine/core'
 import React from 'react'
+import { AuthorSocials } from '../pages/authorProfile'
 
 import { IAuthor } from '../types'
 
-interface IProps {}
+interface IProps {
+  author: IAuthor
+}
 
-const Author: React.FC<IProps> = () => {
-  const author = {
-    photo: { url: '' },
-    name: 'Author',
-  }
-
+const Author: React.FC<IProps> = ({ author }) => {
   return (
-    <>
-      <Box>
-        <Avatar size="xl" src={author.photo.url} mb={4} />
-        <Title order={3}>{author.name}</Title>
-      </Box>
-    </>
+    <Paper shadow="xs" radius="md" p={20}>
+      <Group>
+        <Avatar size="xl" src={author.avatar} mb={4} />
+        <Box>
+          <Title sx={(theme) => ({ fontFamily: theme.fontFamily })} order={3}>
+            {author.name}
+          </Title>
+          <Text style={{ fontWeight: 700 }}>@{author.slug}</Text>
+        </Box>
+      </Group>
+      <AuthorSocials authorDetails={author} />
+    </Paper>
   )
 }
 
