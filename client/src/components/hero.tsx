@@ -35,7 +35,13 @@ const Hero: React.FC<IProps> = () => {
             Cubicle
           </Text>
           <Text
-            sx={(theme) => ({ fontSize: '2.5rem', color: theme.primaryColor })}
+            sx={(theme) => ({
+              fontSize: '2.5rem',
+              color:
+                theme.colorScheme === 'dark'
+                  ? theme.primaryColor
+                  : theme.colors.cyan[6],
+            })}
           >
             Welcomes you
           </Text>

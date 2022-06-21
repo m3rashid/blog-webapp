@@ -1,11 +1,12 @@
 import { Router } from 'express'
 
-import { makeSafe } from '../../utils/router'
+import { checkAuth, makeSafe } from '../../utils/router'
 import { authRateLimiter, regularRateLimiter } from '../../utils/rateLimiters'
 import {
   createCategory,
   deleteCategory,
   editCategory,
+  getAllCategories,
   getCategoriesByAuthor,
   getCategoriesByPost,
 } from './controllers'
@@ -17,21 +18,25 @@ import {
 
 const r = Router()
 
+r.post('/category/all', regularRateLimiter, makeSafe(getAllCategories))
 r.post(
   '/category/create',
   authRateLimiter,
+  checkAuth,
   makeSafe(validateAddCategory),
   makeSafe(createCategory)
 )
 r.post(
   '/category/delete',
   authRateLimiter,
+  checkAuth,
   makeSafe(validateDeleteCategory),
   makeSafe(deleteCategory)
 )
 r.post(
   '/category/edit',
   authRateLimiter,
+  checkAuth,
   makeSafe(validateEditCategory),
   makeSafe(editCategory)
 )

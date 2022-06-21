@@ -1,10 +1,16 @@
-import { Box } from '@mantine/core'
+import React from 'react'
+import { Box, Grid } from '@mantine/core'
 import Hero from '../components/hero'
 import PageWrapper from '../components/globals/pageWrapper'
+import { useRecoilValue } from 'recoil'
+import { allPostsAtom } from '../atoms/allPosts'
+import PostCard from '../components/post/postcard'
 
 interface IProps {}
 
 const Home: React.FC<IProps> = () => {
+  const posts = useRecoilValue(allPostsAtom)
+
   return (
     <PageWrapper>
       {/* <Head>
@@ -46,6 +52,18 @@ const Home: React.FC<IProps> = () => {
       <Box style={{ padding: '10px' }}>
         <Hero />
       </Box>
+      <Grid columns={2} style={{ gap: '10px' }}>
+        {posts.map((post) => {
+          return (
+            <PostCard
+              key={post._id}
+              categories={['sdfa', 'asdfasd']}
+              image={post.featuredImage}
+              title={post.title}
+            />
+          )
+        })}
+      </Grid>
     </PageWrapper>
   )
 }

@@ -3,10 +3,11 @@ import { HydratedDocument } from 'mongoose'
 import { IPost, Post } from './post.model'
 
 export const createPost = async (req: Request, res: Response) => {
-  const { title, data, bannerImageUrl, authorId, categories, published } =
+  const { title, slug, data, bannerImageUrl, authorId, categories, published } =
     req.body
   const post: HydratedDocument<IPost> = new Post({
     title,
+    slug,
     data,
     bannerImageUrl,
     author: authorId,
@@ -20,19 +21,20 @@ export const createPost = async (req: Request, res: Response) => {
 export const editPost = async (req: Request, res: Response) => {}
 
 export const deletePost = async (req: Request, res: Response) => {
-  const { id } = req.body
-  const post = await Post.findByIdAndUpdate(id, { deleted: true })
+  const { slug } = req.body
+  const post = await Post.findOneAndUpdate({ slug }, { deleted: true })
   res.status(200).json('Post Deleted')
 }
 
 export const getPostsForCard = async (req: Request, res: Response) => {
+  // use aggregation for only desired results
   const posts = await Post.find({ published: true }).limit(6)
   res.status(200).json(posts)
 }
 
 export const getPostDetails = async (req: Request, res: Response) => {
-  const { id } = req.body
-  const post = await Post.findById(id)
+  const { slug } = req.body
+  const post = await Post.findOne({ slug })
   return res.status(200).json(post)
 }
 

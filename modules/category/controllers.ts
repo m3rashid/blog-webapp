@@ -2,6 +2,11 @@ import { Request, Response } from 'express'
 import { HydratedDocument } from 'mongoose'
 import { Category, ICategory } from './category.model'
 
+export const getAllCategories = async (req: Request, res: Response) => {
+  const categories = await Category.find()
+  res.json(categories)
+}
+
 export const createCategory = async (req: Request, res: Response) => {
   const { name, slug } = req.body
   const category: HydratedDocument<ICategory> = new Category({ name, slug })

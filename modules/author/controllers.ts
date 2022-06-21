@@ -1,12 +1,15 @@
 import { Request, Response } from 'express'
 import { HydratedDocument } from 'mongoose'
 
+import { User } from '../auth'
 import { Author, IAuthor } from './author.model'
 
 export const createAuthorProfile = async (req: Request, res: Response) => {
+  const userId = req.userId
+
   const {
-    userId,
     name,
+    slug,
     bio,
     avatar,
     website,
@@ -17,9 +20,13 @@ export const createAuthorProfile = async (req: Request, res: Response) => {
     linkedinUrl,
     youtubeUrl,
   } = req.body
+  if (slug === 'me' || slug.includes('/')) {
+    throw new Error('Inappropriate pen name')
+  }
+
   const author: HydratedDocument<IAuthor> = new Author({
-    user: userId,
     name,
+    slug,
     bio,
     avatar,
     website,
@@ -31,7 +38,9 @@ export const createAuthorProfile = async (req: Request, res: Response) => {
     youtubeUrl,
   })
   const saved = await author.save()
-  return res.send(saved)
+  const savedAuth = await User.findByIdAndUpdate(userId, { profile: saved._id })
+
+  return res.status(200).json({ author: saved, user: savedAuth })
 }
 
 export const deleteAuthorProfile = async (req: Request, res: Response) => {
@@ -45,12 +54,12 @@ export const deleteAuthorProfile = async (req: Request, res: Response) => {
 }
 
 export const editAuthorProfile = async (req: Request, res: Response) => {
-  const { authorId } = req.body
-  const author = await Author.findById(authorId)
+  const { slug } = req.body
+  const author = await Author.findOne({ slug })
 
   if (!author) throw new Error('Author not found')
   const newAuthor = await Author.findOneAndUpdate(
-    { _id: authorId },
+    { slug: slug },
     { $set: { ...req.body } }
   )
 
@@ -59,7 +68,7 @@ export const editAuthorProfile = async (req: Request, res: Response) => {
 
 export const getAuthorDetails = async (req: Request, res: Response) => {
   const { authorId } = req.body
-  const author = await Author.findById(authorId).populate('user', 'categories')
+  const author = await Author.findById(authorId)
 
-  return res.send(author)
+  return res.status(200).json(author)
 }

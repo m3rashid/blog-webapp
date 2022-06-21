@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { makeSafe } from '../../utils/router'
+import { checkAuth, makeSafe } from '../../utils/router'
 import { authRateLimiter, regularRateLimiter } from '../../utils/rateLimiters'
 import {
   createAuthorProfile,
@@ -20,18 +20,21 @@ const r = Router()
 r.post(
   '/author/create',
   authRateLimiter,
+  checkAuth,
   makeSafe(validateAddAuthor),
   makeSafe(createAuthorProfile)
 )
 r.post(
   '/author/delete',
   authRateLimiter,
+  checkAuth,
   makeSafe(validateDeleteAuthor),
   makeSafe(deleteAuthorProfile)
 )
 r.post(
   '/author/edit',
   authRateLimiter,
+  checkAuth,
   makeSafe(validateEditAuthor),
   makeSafe(editAuthorProfile)
 )

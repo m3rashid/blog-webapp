@@ -1,12 +1,8 @@
 import mongoose from 'mongoose'
 
-import { IUser } from '../auth'
-import { ICategory } from '../category'
-import { IPost } from '../post'
-
 export interface IAuthor {
-  user: IUser
   name: string
+  slug: string
   bio: string
   avatar: string
   website?: string
@@ -16,21 +12,19 @@ export interface IAuthor {
   instagramUrl?: string
   linkedinUrl?: string
   youtubeUrl?: string
-  posts: IPost[]
-  categories: ICategory[]
   deleted: boolean
 }
 
 const authorSchema = new mongoose.Schema<IAuthor>(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-
     name: {
       type: String,
       required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
     },
     bio: {
       type: String,
@@ -40,39 +34,13 @@ const authorSchema = new mongoose.Schema<IAuthor>(
       type: String,
       required: true,
     },
-    website: {
-      type: String,
-    },
-    githubUrl: {
-      type: String,
-    },
-    twitterUrl: {
-      type: String,
-    },
-    facebookUrl: {
-      type: String,
-    },
-    instagramUrl: {
-      type: String,
-    },
-    linkedinUrl: {
-      type: String,
-    },
-    youtubeUrl: {
-      type: String,
-    },
-    posts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
-    categories: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-      },
-    ],
+    website: { type: String },
+    githubUrl: { type: String },
+    twitterUrl: { type: String },
+    facebookUrl: { type: String },
+    instagramUrl: { type: String },
+    linkedinUrl: { type: String },
+    youtubeUrl: { type: String },
     deleted: {
       type: Boolean,
       default: false,

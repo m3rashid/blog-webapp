@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, createStyles } from '@mantine/core'
 
 import PageWrapper from '../components/globals/pageWrapper'
-import TitleSlug from '../components/post/titleSlug'
+import TitleSlug, { IPostMeta } from '../components/post/titleSlug'
 // import { PostType } from '../atoms/post'
 import { useRecoilValue } from 'recoil'
 import { authAtom } from '../atoms/auth'
@@ -31,14 +31,18 @@ const EditPost: React.FC<IProps> = () => {
       navigate('/auth')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user.isAuthenticated])
 
   // const [type, setType] = React.useState<PostType>('text')
 
   // get post on load from post slug
   // const post: any = []
-  const [postTitle, setPostTitle] = React.useState('')
-  const [postSlug, setPostSlug] = React.useState('')
+  const [postMeta, setPostMeta] = React.useState<IPostMeta>({
+    title: '',
+    slug: '',
+    bannerImageUrl: '',
+    categories: [],
+  })
 
   const { classes } = useStyles()
   const moveToDraft = () => {}
@@ -51,7 +55,7 @@ const EditPost: React.FC<IProps> = () => {
         <Button onClick={handlePublish}>Save and Publish</Button>
       </Box>
 
-      <TitleSlug {...{ postTitle, setPostTitle, postSlug, setPostSlug }} />
+      <TitleSlug postMeta={postMeta} setPostMeta={setPostMeta} />
 
       {/* <CreateOrEditPost /> */}
     </PageWrapper>

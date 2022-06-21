@@ -5,7 +5,7 @@ import BreadCrumbs from './breadCrumbs'
 
 export const useStyles = createStyles((theme) => ({
   root: {
-    minHeight: '100vh',
+    minHeight: '90vh',
     maxWidth: '100vw',
     overflowX: 'hidden',
     paddingTop: '10px',

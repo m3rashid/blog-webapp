@@ -1,6 +1,14 @@
-import { createStyles, Group, Paper, TextInput } from '@mantine/core'
 import React from 'react'
-import { Article, Webhook } from 'tabler-icons-react'
+import { Article, Webhook, Photo, Notification } from 'tabler-icons-react'
+import {
+  createStyles,
+  Group,
+  MultiSelect,
+  Paper,
+  TextInput,
+} from '@mantine/core'
+import { useRecoilValue } from 'recoil'
+import { categoryAtom } from '../../atoms/categories'
 
 const useStyles = createStyles((theme) => ({
   buttonTop: {
@@ -12,45 +20,85 @@ const useStyles = createStyles((theme) => ({
   input: {
     flexGrow: 1,
   },
+  multiselect: {
+    marginTop: '15px',
+  },
 }))
 
-interface IProps {
-  postTitle: string
-  postSlug: string
-  setPostTitle: React.Dispatch<React.SetStateAction<string>>
-  setPostSlug: React.Dispatch<React.SetStateAction<string>>
+export interface IPostMeta {
+  title: string
+  slug: string
+  bannerImageUrl: string
+  categories: string[]
 }
 
-const TitleSlug: React.FC<IProps> = ({
-  postSlug,
-  postTitle,
-  setPostSlug,
-  setPostTitle,
-}) => {
+interface IProps {
+  postMeta: IPostMeta
+  setPostMeta: React.Dispatch<React.SetStateAction<IPostMeta>>
+}
+
+const TitleSlug: React.FC<IProps> = ({ postMeta, setPostMeta }) => {
   const { classes } = useStyles()
+  const categories = useRecoilValue(categoryAtom)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setPostMeta((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleMultiSelectChange = (val: string[]) => {
+    setPostMeta((prev) => ({ ...prev, categories: val }))
+  }
 
   return (
-    <Paper shadow="xs" p="md" style={{ marginBottom: '30px' }}>
+    <Paper
+      shadow="xs"
+      p="md"
+      style={{
+        marginBottom: '30px',
+        paddingTop: '40px',
+        paddingBottom: '40px',
+      }}
+    >
       <Group>
         <TextInput
-          name="postTitle"
-          value={postTitle}
+          name="title"
+          value={postMeta.title}
           required
           icon={<Article />}
           className={classes.input}
-          onChange={(e: any) => setPostTitle(e.target.value)}
+          onChange={handleChange}
           placeholder="Enter Post title"
         />
         <TextInput
-          name="postSlug"
-          value={postSlug}
+          name="slug"
+          value={postMeta.slug}
           required
           icon={<Webhook />}
           className={classes.input}
-          onChange={(e: any) => setPostSlug(e.target.value)}
+          onChange={handleChange}
           placeholder="Enter Post slug"
         />
       </Group>
+      <TextInput
+        name="bannerImageUrl"
+        value={postMeta.bannerImageUrl}
+        required
+        icon={<Photo />}
+        className={classes.input}
+        style={{ marginTop: '15px' }}
+        onChange={handleChange}
+        placeholder="Enter banner image Url"
+      />
+      <MultiSelect
+        data={categories}
+        value={postMeta.categories}
+        onChange={handleMultiSelectChange}
+        icon={<Notification />}
+        className={classes.multiselect}
+        maxDropdownHeight={160}
+        placeholder="Select categories for your post"
+      />
     </Paper>
   )
 }

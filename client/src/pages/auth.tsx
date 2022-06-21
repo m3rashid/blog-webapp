@@ -31,7 +31,7 @@ const Auth = () => {
       navigate('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user.isAuthenticated])
 
   const [authType, setAuthType] = React.useState<IAuthType>('login')
   const emailRef = React.useRef<HTMLInputElement>(null)

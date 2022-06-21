@@ -11,12 +11,13 @@ export enum POST_DATA_TYPE {
 
 export interface IPostData {
   id: string
-  content: string
   type: 'code' | 'text'
+  content: string
 }
 
 export interface IPost {
-  tilte: string
+  title: string
+  slug: string
   data: IPostData[]
   bannerImageUrl: string
   comments: IComment[]
@@ -28,9 +29,14 @@ export interface IPost {
 
 const postSchema = new mongoose.Schema<IPost>(
   {
-    tilte: {
+    title: {
       type: String,
       required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
     },
     data: [
       {
