@@ -6,7 +6,10 @@ import { IAuthor } from '../types'
 interface IProps {}
 
 const Author: React.FC<IProps> = () => {
-  const author: any = {}
+  const author = {
+    photo: { url: '' },
+    name: 'Author',
+  }
 
   return (
     <>

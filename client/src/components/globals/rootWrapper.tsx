@@ -49,7 +49,7 @@ const RootWrapper: React.FC<IProps> = ({ children }) => {
           <MantineProvider
             theme={{
               ...theme,
-              colors: { ...theme.colors, brand: ['#3BC9DB'] },
+              colors: { ...theme.colors, brand: ['#15AABF'] },
             }}
             withGlobalStyles
             withNormalizeCSS

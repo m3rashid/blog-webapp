@@ -1,5 +1,7 @@
 import { Grid, Group, Stack } from '@mantine/core'
 import React from 'react'
+import { useParams } from 'react-router-dom'
+import { useSafeApiCall } from '../api/safeApiCall'
 
 import Author from '../components/author'
 import Categories from '../components/categories'
@@ -7,12 +9,43 @@ import Comments from '../components/comments'
 import PageWrapper from '../components/globals/pageWrapper'
 import PostDetail from '../components/postDetail'
 import RelatedPosts from '../components/relatedPosts'
+import { IAuthor, ICategory } from '../types'
 const CreateComment = React.lazy(() => import('../components/createComment'))
+
+export interface IPost {
+  bannerImageUrl: string
+  categories: ICategory[]
+  data: any
+  comments: any[]
+  _id?: string
+  author: IAuthor | string
+  slug: string
+  title: string
+  excerpt: string
+  createdAt?: string
+  updatedAt?: string
+}
 
 interface IProps {}
 
 const Post: React.FC<IProps> = () => {
-  // const post: any = ''
+  const { slug } = useParams()
+  const { safeApiCall } = useSafeApiCall()
+  const [postDetail, setPostDetail] = React.useState<IPost>()
+
+  const getPost = async () => {
+    const res = await safeApiCall({
+      endpoint: '/post/details',
+      body: { slug },
+      notif: { id: 'get-post' },
+    })
+    if (!res) return
+    console.log(res.data)
+  }
+
+  React.useEffect(() => {
+    getPost().then().catch()
+  }, [])
 
   // const postTitle = post.title || 'Post'
   // const keywords = postTitle.split(' ')

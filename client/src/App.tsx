@@ -16,13 +16,13 @@ import EditPost from './pages/editPost'
 import Home from './pages/home'
 import Post from './pages/post'
 import { categoryAtom } from './atoms/categories'
-import { allPostsAtom } from './atoms/allPosts'
+import { postsForCardAtom } from './atoms/postCard'
 
 const App = () => {
   const { safeApiCall } = useSafeApiCall()
   const setAuth = useSetRecoilState(authAtom)
   const setCategory = useSetRecoilState(categoryAtom)
-  const setPosts = useSetRecoilState(allPostsAtom)
+  const setPosts = useSetRecoilState(postsForCardAtom)
 
   const getAuth = async () => {
     const res = await safeApiCall({

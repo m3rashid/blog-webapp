@@ -3,13 +3,13 @@ import { Box, Grid } from '@mantine/core'
 import Hero from '../components/hero'
 import PageWrapper from '../components/globals/pageWrapper'
 import { useRecoilValue } from 'recoil'
-import { allPostsAtom } from '../atoms/allPosts'
+import { postsForCardAtom } from '../atoms/postCard'
 import PostCard from '../components/post/postcard'
 
 interface IProps {}
 
 const Home: React.FC<IProps> = () => {
-  const posts = useRecoilValue(allPostsAtom)
+  const posts = useRecoilValue(postsForCardAtom)
 
   return (
     <PageWrapper>
@@ -49,20 +49,19 @@ const Home: React.FC<IProps> = () => {
           content="https://cubicle.vercel.app/favicon.png"
         />
       </Head> */}
-      <Box style={{ padding: '10px' }}>
+      <Box style={{ padding: '10px', marginBottom: '20px' }}>
         <Hero />
       </Box>
       <Grid columns={2} style={{ gap: '10px' }}>
-        {posts.map((post) => {
-          return (
-            <PostCard
-              key={post._id}
-              categories={['sdfa', 'asdfasd']}
-              image={post.featuredImage}
-              title={post.title}
-            />
-          )
-        })}
+        {posts.map((post) => (
+          <PostCard
+            key={post._id}
+            categories={post.categories.map((c) => c.name)}
+            image={post.bannerImageUrl}
+            title={post.title}
+            slug={post.slug}
+          />
+        ))}
       </Grid>
     </PageWrapper>
   )

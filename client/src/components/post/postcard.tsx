@@ -1,9 +1,18 @@
 import React from 'react'
-import { createStyles, Paper, Text, Title, Button, Box } from '@mantine/core'
+import {
+  createStyles,
+  Paper,
+  Text,
+  Title,
+  Button,
+  Box,
+  Group,
+} from '@mantine/core'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
   card: {
-    height: 440,
+    height: 400,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -13,54 +22,64 @@ const useStyles = createStyles((theme) => ({
   },
 
   title: {
-    fontFamily: `Greycliff CF ${theme.fontFamily}`,
+    fontFamily: theme.fontFamily,
     fontWeight: 900,
-    color: theme.white,
     lineHeight: 1.2,
     fontSize: 32,
     marginTop: theme.spacing.xs,
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
   },
 
   category: {
-    color: theme.white,
-    opacity: 0.7,
+    color: theme.black,
     fontWeight: 700,
     textTransform: 'uppercase',
+    backgroundColor: theme.primaryColor,
+    padding: '2px 5px',
+    borderRadius: '5px',
   },
 }))
 
-interface ArticleCardImageProps {
+interface IProps {
   image: string
   title: string
   categories: string[]
+  slug: string
 }
 
-const PostCard = ({ image, title, categories }: ArticleCardImageProps) => {
+const PostCard: React.FC<IProps> = ({ image, title, categories, slug }) => {
   const { classes } = useStyles()
+  const navigate = useNavigate()
 
   return (
     <Paper
       shadow="md"
       p="xl"
       radius="md"
-      sx={{ backgroundImage: `url(${image})` }}
+      sx={(theme) => ({
+        backgroundImage:
+          theme.colorScheme === 'dark'
+            ? `linear-gradient(to bottom, rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.5) 100%), url(${image})`
+            : `linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.4) 100%), url(${image})`,
+        width: '320px',
+      })}
       className={classes.card}
     >
       <Box>
-        {categories.map((category) => {
-          return (
-            <Text className={classes.category} size="xs">
-              {category}
-            </Text>
-          )
-        })}
+        <Group style={{ gap: '5px' }}>
+          {categories.map((category) => {
+            return (
+              <Text key={category} className={classes.category} size="xs">
+                {category}
+              </Text>
+            )
+          })}
+        </Group>
         <Title order={3} className={classes.title}>
           {title}
         </Title>
       </Box>
-      <Button variant="white" color="dark">
-        Read article
-      </Button>
+      <Button onClick={() => navigate(`/post/${slug}`)}>Read article</Button>
     </Paper>
   )
 }

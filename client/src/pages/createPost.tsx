@@ -94,7 +94,7 @@ const CreatePost: React.FC<IProps> = () => {
         slug: postMeta.slug,
         data: data,
         bannerImageUrl: postMeta.bannerImageUrl,
-        author: user.user.profile,
+        authorId: user.user.profile,
         categories: postMeta.categories,
         published: publish,
       },

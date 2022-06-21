@@ -19,16 +19,3 @@ export interface ICategory {
   name: string
   slug: string
 }
-
-export interface IPost {
-  _id?: string
-  author: IAuthor | string
-  slug: string
-  title: string
-  excerpt: string
-  featuredImage: string
-  content: any
-  categories: ICategory[] | string[]
-  createdAt?: string
-  updatedAt?: string
-}
