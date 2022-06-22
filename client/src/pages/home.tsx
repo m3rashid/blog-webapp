@@ -10,7 +10,7 @@ import { useStyles } from './post'
 
 interface IProps {}
 
-const useThisPageStyles = createStyles((theme) => ({
+export const useHomePageStyles = createStyles((theme) => ({
   inner: {
     gridTemplateColumns: '1fr 1fr',
     [theme.fn.smallerThan('sm')]: {
@@ -22,7 +22,7 @@ const useThisPageStyles = createStyles((theme) => ({
 const Home: React.FC<IProps> = () => {
   const posts = useRecoilValue(postsForCardAtom)
   const { classes } = useStyles()
-  const { classes: thisPageClasses } = useThisPageStyles()
+  const { classes: thisPageClasses } = useHomePageStyles()
 
   return (
     <PageWrapper>

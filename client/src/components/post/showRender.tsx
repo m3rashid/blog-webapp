@@ -26,11 +26,24 @@ const useStyles = createStyles((theme) => ({
   },
   contentBox: {
     padding: '0 5px',
+    overflowX: 'auto',
   },
 }))
 
 interface IProps {
   data: ICreatePost[]
+}
+
+export const SingleSectionRender: React.FC<{ data: string }> = ({ data }) => {
+  return (
+    <Box style={{ padding: '0 5px', overflowX: 'auto' }}>
+      <Box
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(marked(data)),
+        }}
+      />
+    </Box>
+  )
 }
 
 const ShowRender: React.FC<IProps> = ({ data }) => {

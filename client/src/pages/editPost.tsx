@@ -1,5 +1,13 @@
 import React from 'react'
-import { Box, Button, Group, Paper, Switch, Title } from '@mantine/core'
+import {
+  Box,
+  Button,
+  Group,
+  Paper,
+  Switch,
+  TextInput,
+  Title,
+} from '@mantine/core'
 
 import PageWrapper from '../components/globals/pageWrapper'
 import { PostType } from '../atoms/post'
@@ -12,6 +20,7 @@ import { useStyles } from './createPost'
 import { nanoid } from 'nanoid'
 import ChooseTypeButton from '../components/post/select'
 import ShowRender from '../components/post/showRender'
+import { Article, Photo } from 'tabler-icons-react'
 const CreateOrEditPost = React.lazy(
   () => import('../components/post/createOrEditPost')
 )
@@ -25,9 +34,11 @@ const EditPost: React.FC<IProps> = () => {
   const user = useRecoilValue(authAtom)
   const [data, setData] = useRecoilState(postAtom)
   const [postData, setPostData] = React.useState({
+    title: '',
     publish: true,
     slug: '',
     postId: '',
+    bannerImageUrl: '',
   })
 
   const getPost = async () => {
@@ -42,12 +53,14 @@ const EditPost: React.FC<IProps> = () => {
       postId: res.data._id,
       slug: res.data.slug,
       publish: res.data.published,
+      title: res.data.title,
+      bannerImageUrl: res.data.bannerImageUrl,
     })
   }
 
   React.useEffect(() => {
     if (!user.isAuthenticated) {
-      navigate('/auth')
+      navigate('/auth', { replace: true })
       return
     }
     getPost().then().catch()
@@ -63,11 +76,14 @@ const EditPost: React.FC<IProps> = () => {
         data: data,
         postId: postData.postId,
         published: postData.publish,
+        title: postData.title,
+        bannerImageUrl: postData.bannerImageUrl,
       },
       endpoint: '/post/edit',
       notif: { id: 'edit-post', show: true },
     })
     if (!res) return
+    setData([])
   }
 
   const handleAddSection = () => {
@@ -96,6 +112,40 @@ const EditPost: React.FC<IProps> = () => {
           }
         />
       </Box>
+
+      <Paper
+        shadow="xs"
+        p="md"
+        style={{
+          marginBottom: '30px',
+          paddingTop: '40px',
+          paddingBottom: '40px',
+        }}
+      >
+        <TextInput
+          name="title"
+          value={postData.title}
+          required
+          icon={<Article />}
+          className={classes.input}
+          onChange={(e) =>
+            setPostData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          placeholder="Enter Post title"
+        />
+        <TextInput
+          name="bannerImageUrl"
+          value={postData.bannerImageUrl}
+          required
+          icon={<Photo />}
+          className={classes.input}
+          style={{ marginTop: '15px' }}
+          onChange={(e) =>
+            setPostData((prev) => ({ ...prev, bannerImageUrl: e.target.value }))
+          }
+          placeholder="Enter banner image Url"
+        />
+      </Paper>
 
       {data.map((section) => (
         <CreateOrEditPost key={section.id} id={section.id} />

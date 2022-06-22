@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { HydratedDocument } from 'mongoose'
+import { bannedWordsForSlug } from '../../utils/helpers'
 
 import { User } from '../auth'
 import { Author, IAuthor } from './author.model'
@@ -20,9 +21,9 @@ export const createAuthorProfile = async (req: Request, res: Response) => {
     linkedinUrl,
     youtubeUrl,
   } = req.body
-  if (slug === 'me' || slug.includes('/')) {
-    throw new Error('Inappropriate pen name')
-  }
+
+  if (slug.length < 5) throw new Error('Slug too short')
+  if (bannedWordsForSlug.includes(slug)) throw new Error('Invalid slug')
 
   const author: HydratedDocument<IAuthor> = new Author({
     name,
@@ -67,8 +68,8 @@ export const editAuthorProfile = async (req: Request, res: Response) => {
 }
 
 export const getAuthorDetails = async (req: Request, res: Response) => {
-  const { authorId } = req.body
-  const author = await Author.findById(authorId)
+  const { slug } = req.body
+  const author = await Author.findOne({ slug })
 
   return res.status(200).json(author)
 }

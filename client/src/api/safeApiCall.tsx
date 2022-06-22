@@ -73,7 +73,7 @@ export const useSafeApiCall = () => {
       return res
     } catch (err: any) {
       if (err.response.status === 401) {
-        setAuthState({ isAuthenticated: false, user: null })
+        setAuthState({ isAuthenticated: false, user: {} as any })
         window.localStorage.removeItem('token')
         setLoading(false)
         return null

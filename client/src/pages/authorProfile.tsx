@@ -1,9 +1,5 @@
 import React from 'react'
-import { useRecoilValue } from 'recoil'
-import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
-import DOMPurify from 'dompurify'
-import { marked } from 'marked'
 import {
   BrandFacebook,
   BrandGithub,
@@ -23,11 +19,12 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { authAtom } from '../atoms/auth'
-import PageWrapper from '../components/globals/pageWrapper'
-import { useSafeApiCall } from '../api/safeApiCall'
 import { IAuthor } from '../types'
+import { useSafeApiCall } from '../api/safeApiCall'
+import PageWrapper from '../components/globals/pageWrapper'
+import { SingleSectionRender } from '../components/post/showRender'
 
 interface IProps {}
 
@@ -88,32 +85,32 @@ export const AuthorSocials: React.FC<{ authorDetails: IAuthor }> = ({
 }
 
 const AuthorProfile: React.FC<IProps> = () => {
-  const user = useRecoilValue(authAtom)
   const navigate = useNavigate()
+  const { slug } = useParams()
   const { safeApiCall } = useSafeApiCall()
   const [authorDetails, setAuthorDetails] = React.useState<IAuthor>()
 
   const handleGetAuthor = async () => {
     const res = await safeApiCall({
-      body: {
-        authorId: user.user.profile,
-      },
+      body: { slug },
       endpoint: '/author/get-details',
       notif: { id: 'get-author-details' },
     })
 
-    if (!res) return
+    if (!res) {
+      return
+    }
     setAuthorDetails(res.data)
   }
 
   React.useEffect(() => {
-    // handle this afterwards
-    if (!user.isAuthenticated || !user.user.profile) {
-      navigate('/auth')
+    if (!slug || slug === 'undefined') {
+      navigate('/author/me/create', { replace: true })
+      return
     }
     handleGetAuthor().then().catch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.isAuthenticated])
+  }, [])
 
   if (!authorDetails) {
     return (
@@ -165,12 +162,7 @@ const AuthorProfile: React.FC<IProps> = () => {
             </Text>
           </Box>
         </Group>
-        <Box
-          my={10}
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(marked(authorDetails.bio)),
-          }}
-        />
+        <SingleSectionRender data={authorDetails.bio} />
       </Paper>
     </PageWrapper>
   )

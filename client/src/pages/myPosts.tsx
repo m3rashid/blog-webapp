@@ -28,12 +28,12 @@ const MyPosts: React.FC<IProps> = () => {
 
   React.useEffect(() => {
     if (!auth.isAuthenticated) {
-      navigate('/auth')
+      navigate('/auth', { replace: true })
       return
     }
     getAuthorPosts().then().catch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [auth.isAuthenticated])
 
   return (
     <PageWrapper>

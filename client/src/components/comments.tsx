@@ -1,8 +1,8 @@
-import { Avatar, Box, Paper, Stack, Text, Title } from '@mantine/core'
 import dayjs from 'dayjs'
-import DOMPurify from 'dompurify'
-import { marked } from 'marked'
 import React from 'react'
+import { Avatar, Box, Group, Paper, Stack, Text, Title } from '@mantine/core'
+
+import { SingleSectionRender } from './post/showRender'
 
 interface IProps {
   comments: any[]
@@ -10,38 +10,55 @@ interface IProps {
 
 const Comments: React.FC<IProps> = ({ comments }) => {
   return (
-    <Paper
-      style={{ width: '100%', height: 'min-content' }}
-      shadow="xs"
-      p="md"
-      radius="md"
-    >
-      <Title order={3} sx={(theme) => ({ fontFamily: theme.fontFamily })}>
-        Comments
-      </Title>
+    <>
+      <Paper
+        style={{ width: '100%', height: 'min-content' }}
+        shadow="xs"
+        p="md"
+        radius="md"
+      >
+        <Title order={3} sx={(theme) => ({ fontFamily: theme.fontFamily })}>
+          Comments
+        </Title>
+      </Paper>
+
       <Stack spacing={4} mt={2}>
         {comments.length === 0 ? (
-          <Text>No comments yet</Text>
+          <Paper
+            style={{ width: '100%', height: 'min-content' }}
+            shadow="xs"
+            p="md"
+            radius="md"
+          >
+            <Text>No comments yet</Text>
+          </Paper>
         ) : (
           comments.map((comment) => {
             return (
-              <Box key={comment._id}>
-                <Avatar />
-                <Text>{comment.name}</Text>
-                <Box
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(marked(comment.comment)),
-                  }}
-                />
-                <Text>
-                  {dayjs(comment.createdAt).format('dddd, DD MMMM YYYY')}
-                </Text>
-              </Box>
+              <Paper
+                style={{ width: '100%', height: 'min-content' }}
+                shadow="xs"
+                p="md"
+                radius="md"
+                mb={15}
+                key={comment._id}
+              >
+                <Group style={{ marginBottom: '10px' }}>
+                  <Avatar size={60} radius={30} />
+                  <Box>
+                    <Text style={{ fontWeight: 600 }}>{comment.name}</Text>
+                    <Text>
+                      {dayjs(comment.createdAt).format('dddd, DD MMMM YYYY')}
+                    </Text>
+                  </Box>
+                </Group>
+                <SingleSectionRender data={comment.comment} />
+              </Paper>
             )
           })
         )}
       </Stack>
-    </Paper>
+    </>
   )
 }
 

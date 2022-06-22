@@ -12,7 +12,7 @@ const Author: React.FC<IProps> = ({ author }) => {
   return (
     <Paper shadow="xs" radius="md" p={20}>
       <Group>
-        <Avatar size="xl" src={author.avatar} mb={4} />
+        <Avatar size="xl" radius={100} src={author.avatar} mb={4} />
         <Box>
           <Title sx={(theme) => ({ fontFamily: theme.fontFamily })} order={3}>
             {author.name}

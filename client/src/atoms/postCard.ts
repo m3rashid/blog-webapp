@@ -1,6 +1,6 @@
 import { atom } from 'recoil'
 
-export interface IPostCard {
+export interface IPostCardForCard {
   _id: string
   title: string
   slug: string
@@ -11,7 +11,7 @@ export interface IPostCard {
   }[]
 }
 
-export const postsForCardAtom = atom<IPostCard[]>({
+export const postsForCardAtom = atom<IPostCardForCard[]>({
   key: 'posts-for-card',
   default: [],
 })

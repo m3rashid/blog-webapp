@@ -10,6 +10,7 @@ import {
   getPostDetails,
   getAuthorPosts,
   getRelatedPosts,
+  getPostsByCategory,
 } from './controllers'
 
 const r = Router()
@@ -20,5 +21,6 @@ r.post('/post/card', regularRateLimiter, makeSafe(getPostsForCard))
 r.post('/post/details', regularRateLimiter, makeSafe(getPostDetails))
 r.post('/post/author', regularRateLimiter, makeSafe(getAuthorPosts))
 r.post('/post/related', regularRateLimiter, makeSafe(getRelatedPosts))
+r.post('/post/by-category', regularRateLimiter, makeSafe(getPostsByCategory))
 
 export const postRouter = r

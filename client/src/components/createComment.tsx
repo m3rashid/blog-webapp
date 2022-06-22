@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Checkbox,
   createStyles,
@@ -9,10 +8,11 @@ import {
   TextInput,
   Title,
 } from '@mantine/core'
-import DOMPurify from 'dompurify'
-import { marked } from 'marked'
+import { showNotification } from '@mantine/notifications'
 import React from 'react'
-import { AlphabetLatin } from 'tabler-icons-react'
+import { AlphabetLatin, Error404 } from 'tabler-icons-react'
+import { useSafeApiCall } from '../api/safeApiCall'
+import { SingleSectionRender } from './post/showRender'
 
 const useStyles = createStyles((theme) => ({
   input: {
@@ -22,7 +22,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 interface IProps {
-  slug: string
+  postId: string
 }
 
 interface IComment {
@@ -31,8 +31,9 @@ interface IComment {
   remember: boolean
 }
 
-const CreateComment: React.FC<IProps> = ({ slug }) => {
+const CreateComment: React.FC<IProps> = ({ postId }) => {
   const { classes } = useStyles()
+  const { safeApiCall, loading } = useSafeApiCall()
 
   const [comment, setComment] = React.useState<IComment>({
     name: window.localStorage.getItem('myName') || '',
@@ -40,7 +41,39 @@ const CreateComment: React.FC<IProps> = ({ slug }) => {
     remember: true,
   })
 
-  const handleAddComment = async () => {}
+  const handleAddComment = async () => {
+    if (!comment.name || !comment.comment) {
+      showNotification({
+        id: 'empty-comment',
+        title: 'Empty Comment',
+        message: 'All fields are required',
+        color: 'red',
+        icon: <Error404 />,
+        autoClose: 5000,
+        disallowClose: false,
+      })
+      return
+    }
+
+    if (comment.remember) {
+      window.localStorage.setItem('myName', comment.name)
+    } else {
+      window.localStorage.removeItem('myName')
+    }
+
+    const res = await safeApiCall({
+      body: {
+        name: comment.name,
+        comment: comment.comment,
+        postId: postId,
+      },
+      endpoint: '/comment/create',
+      notif: { id: 'create-comment', show: true },
+    })
+
+    if (!res) return
+    setComment((prev) => ({ ...prev, comment: '' }))
+  }
 
   return (
     <Paper shadow="xs" radius="md" p={20}>
@@ -48,7 +81,7 @@ const CreateComment: React.FC<IProps> = ({ slug }) => {
         sx={(theme) => ({ fontFamily: theme.fontFamily, marginBottom: '10px' })}
         order={3}
       >
-        Create Comment
+        Join the Discussion
       </Title>
       <SimpleGrid>
         <TextInput
@@ -81,14 +114,11 @@ const CreateComment: React.FC<IProps> = ({ slug }) => {
           placeholder="Enter your comment (markdown supported)"
         />
         {comment.comment.length > 0 && (
-          <Box
-            my={10}
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(marked(comment.comment)),
-            }}
-          />
+          <SingleSectionRender data={comment.comment} />
         )}
-        <Button onClick={handleAddComment}>Add Comment</Button>
+        <Button onClick={handleAddComment} loading={loading}>
+          Add Comment
+        </Button>
       </SimpleGrid>
     </Paper>
   )

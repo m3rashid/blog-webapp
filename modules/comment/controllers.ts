@@ -1,18 +1,21 @@
 import { Request, Response } from 'express'
 import { HydratedDocument } from 'mongoose'
+import { Post } from '../post'
 
 import { Comment, IComment } from './comment.model'
 
 export const createComment = async (req: Request, res: Response) => {
   const { name, comment, postId } = req.body
 
-  const newComment: HydratedDocument<IComment> = new Comment({
-    name,
-    comment,
-    post: postId,
-  })
+  const newComment: HydratedDocument<IComment> = new Comment({ name, comment })
   const saved = await newComment.save()
-  return res.send(saved)
+
+  const savedPost = await Post.findOneAndUpdate(
+    { _id: postId },
+    { $push: { comments: saved._id } }
+  )
+
+  return res.status(200).json(saved)
 }
 
 export const editComment = async (req: Request, res: Response) => {
@@ -25,7 +28,7 @@ export const editComment = async (req: Request, res: Response) => {
     { _id: commentId },
     { $set: { ...req.body } }
   )
-  return res.send(newComment)
+  return res.status(200).json(newComment)
 }
 
 export const deleteComment = async (req: Request, res: Response) => {
@@ -33,5 +36,5 @@ export const deleteComment = async (req: Request, res: Response) => {
   const deleted = await Comment.findByIdAndDelete(commentId)
   if (!deleted) throw new Error('Comment not found')
 
-  return res.send(deleted)
+  return res.status(200).json(deleted)
 }

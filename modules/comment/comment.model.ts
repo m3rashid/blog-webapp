@@ -1,7 +1,5 @@
 import mongoose from 'mongoose'
 
-import { IPost } from '../post'
-
 export interface IComment {
   name: string
   comment: string

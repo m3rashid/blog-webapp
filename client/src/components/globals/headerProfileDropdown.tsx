@@ -1,6 +1,4 @@
 import React from 'react'
-import { SetterOrUpdater, useRecoilState } from 'recoil'
-import { Avatar, Divider, Menu } from '@mantine/core'
 import {
   ArrowsLeftRight,
   Article,
@@ -10,16 +8,20 @@ import {
   User,
   UserOff,
 } from 'tabler-icons-react'
+import { useNavigate } from 'react-router-dom'
+import { Avatar, Divider, Menu } from '@mantine/core'
+import { SetterOrUpdater, useRecoilState } from 'recoil'
+import { showNotification } from '@mantine/notifications'
 
 import { authAtom, IAuthState } from '../../atoms/auth'
-import { useNavigate } from 'react-router-dom'
-import { showNotification } from '@mantine/notifications'
 import CreateCategoryModal from './createCategoryModal'
 
 const LoggedInActions = ({
+  auth,
   setAuth,
   setModalOpen,
 }: {
+  auth: IAuthState
   setAuth: SetterOrUpdater<IAuthState>
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
@@ -27,7 +29,7 @@ const LoggedInActions = ({
 
   const handleLogout = () => {
     window.localStorage.removeItem('token')
-    setAuth({ isAuthenticated: false, user: null })
+    setAuth({ isAuthenticated: false, user: {} as any })
     showNotification({
       title: 'Logged out Successfully',
       message: 'You have been logged out',
@@ -39,7 +41,7 @@ const LoggedInActions = ({
       <Menu.Label>Profile</Menu.Label>
       <Menu.Item
         icon={<User size={14} />}
-        onClick={() => navigate('/author/me')}
+        onClick={() => navigate(`/author/${auth.user.author?.slug}`)}
       >
         Profile
       </Menu.Item>
@@ -117,7 +119,11 @@ const HeaderProfileDropdown: React.FC<IProps> = () => {
         }
       >
         {auth.isAuthenticated ? (
-          <LoggedInActions setAuth={setAuth} setModalOpen={setModalOpen} />
+          <LoggedInActions
+            auth={auth}
+            setAuth={setAuth}
+            setModalOpen={setModalOpen}
+          />
         ) : (
           <NotLoggedInActions />
         )}

@@ -7,11 +7,13 @@ import {
   Paper,
   Textarea,
 } from '@mantine/core'
-
 import { useRecoilState } from 'recoil'
+import { AlertOctagon } from 'tabler-icons-react'
+import { showNotification } from '@mantine/notifications'
+
+import { deepClone } from '../utils'
 import ChooseTypeButton from './select'
 import { ICreatePost, postAtom, PostType } from '../../atoms/post'
-import { deepClone } from '../utils'
 
 const useStyles = createStyles((theme) => ({
   textboxContainer: {
@@ -72,6 +74,18 @@ const CreateOrEditPost: React.FC<IProps> = ({ id }) => {
   }, [content])
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (concerned?.type === 'text' && e.target.value.includes('```')) {
+      showNotification({
+        title: 'No code inside content container',
+        message:
+          'Do not use code blocks inside of content container, It may lead to unexpected problems in render, Use code type for code blocks',
+        id: 'code-warning',
+        color: 'red',
+        icon: <AlertOctagon />,
+        autoClose: 5000,
+        disallowClose: false,
+      })
+    }
     setContent(e.target.value)
   }
 

@@ -17,7 +17,7 @@ const addAuthorSchema = Joi.object({
 })
 
 const editAuthorSchema = Joi.object({
-  authorId: Joi.string().required(),
+  _id: Joi.string().required(),
   name: Joi.string().optional().min(3).max(50),
   slug: Joi.string().optional().min(3).max(10),
   bio: Joi.string().optional().min(10).max(1000),
@@ -29,6 +29,10 @@ const editAuthorSchema = Joi.object({
   instagramUrl: Joi.string().optional().allow(null, ''),
   linkedinUrl: Joi.string().optional().allow(null, ''),
   youtubeUrl: Joi.string().optional().allow(null, ''),
+  deleted: Joi.any(),
+  createdAt: Joi.any(),
+  updatedAt: Joi.any(),
+  __v: Joi.any(),
 })
 
 const deleteAuthorSchema = Joi.object({
@@ -36,7 +40,7 @@ const deleteAuthorSchema = Joi.object({
 })
 
 const getAuthorDetailsSchema = Joi.object({
-  authorId: Joi.string().required(),
+  slug: Joi.string().required(),
 })
 
 export const validateAddAuthor = initValidator(addAuthorSchema)

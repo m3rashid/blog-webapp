@@ -32,10 +32,6 @@ export const useStyles = createStyles((theme) => ({
   },
   input: {
     flexGrow: 1,
-    input: {
-      borderWidth: '1px',
-      borderColor: theme.colors.cyan[7],
-    },
   },
   switch: {
     display: 'flex',
@@ -60,9 +56,9 @@ const CreatePost: React.FC<IProps> = () => {
 
   React.useEffect(() => {
     if (!user.isAuthenticated) {
-      navigate('/auth')
+      navigate('/auth', { replace: true })
     } else if (!user.user.profile) {
-      navigate('/author/me/create')
+      navigate('/author/me/create', { replace: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.isAuthenticated])

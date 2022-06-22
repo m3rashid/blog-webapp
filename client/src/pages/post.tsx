@@ -89,12 +89,19 @@ const Post: React.FC<IProps> = () => {
   }
 
   React.useEffect(() => {
+    window.scrollTo(0, 0)
     getPost().then().catch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug])
 
   if (!postDetail) {
-    return <Loader />
+    return (
+      <PageWrapper>
+        <Group style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Loader />
+        </Group>
+      </PageWrapper>
+    )
   }
 
   // const postTitle = post.title || 'Post'
@@ -141,7 +148,7 @@ const Post: React.FC<IProps> = () => {
           <Author author={postDetail.author as IAuthor} />
           <RelatedPosts slug={slug as string} />
           <Categories />
-          <CreateComment slug={postDetail.slug} />
+          <CreateComment postId={postDetail._id as string} />
         </SimpleGrid>
       </Group>
     </PageWrapper>

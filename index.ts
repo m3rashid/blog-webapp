@@ -25,11 +25,7 @@ app.use(author.authorRouter)
 app.use(category.categoryRouter)
 app.use(comment.commentRouter)
 app.use(post.postRouter)
-/**
- * add more routes here
- * .......
- * .....
- */
+
 app.all('/', (_: Request, res: Response) => {
   return res.json({ message: 'Server is OK' })
 })

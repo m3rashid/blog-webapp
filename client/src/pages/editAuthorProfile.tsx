@@ -2,6 +2,7 @@ import {
   Button,
   createStyles,
   Group,
+  Loader,
   Paper,
   SimpleGrid,
   Textarea,
@@ -9,6 +10,8 @@ import {
   Title,
 } from '@mantine/core'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
 import {
   BrandFacebook,
   BrandGithub,
@@ -16,19 +19,13 @@ import {
   BrandLinkedin,
   BrandTwitter,
   BrandYoutube,
-  User,
-  Webhook,
   World,
 } from 'tabler-icons-react'
-import { useRecoilState } from 'recoil'
-import { useNavigate } from 'react-router-dom'
-
-import { IAuthor } from '../types'
-import { authAtom } from '../atoms/auth'
 import { useSafeApiCall } from '../api/safeApiCall'
-import { showNotification } from '@mantine/notifications'
+import { authAtom } from '../atoms/auth'
 import PageWrapper from '../components/globals/pageWrapper'
 import { SingleSectionRender } from '../components/post/showRender'
+import { IAuthor } from '../types'
 
 const useStyles = createStyles((theme) => ({
   input: {
@@ -40,42 +37,48 @@ const useStyles = createStyles((theme) => ({
 
 interface IProps {}
 
-const CreateEditProfile: React.FC<IProps> = () => {
-  const [auth, setAuth] = useRecoilState(authAtom)
+const EditAuthorProfile: React.FC<IProps> = () => {
   const navigate = useNavigate()
+  const auth = useRecoilValue(authAtom)
+  const { safeApiCall, loading } = useSafeApiCall()
+  const [authorDetails, setAuthorDetails] = React.useState<IAuthor>({
+    name: '',
+    slug: '',
+    bio: '',
+    avatar: '',
+    website: '',
+    githubUrl: '',
+    twitterUrl: '',
+    facebookUrl: '',
+    instagramUrl: '',
+    linkedinUrl: '',
+    youtubeUrl: '',
+  })
 
-  const { classes } = useStyles()
+  const handleGetAuthor = async () => {
+    const res = await safeApiCall({
+      body: { slug: auth.user.author?.slug },
+      endpoint: '/author/get-details',
+      notif: { id: 'get-author-details' },
+    })
+
+    if (!res) {
+      return
+    }
+    setAuthorDetails(res.data)
+  }
 
   React.useEffect(() => {
     if (!auth.isAuthenticated) {
       navigate('/auth', { replace: true })
+      return
     }
-    if (auth.user.profile) {
-      navigate('/author/me/edit', { replace: true })
-    }
+
+    handleGetAuthor().then().catch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.isAuthenticated])
 
-  const initialState: IAuthor = React.useMemo(
-    () => ({
-      name: '',
-      slug: '',
-      bio: '',
-      avatar: '',
-      website: '',
-      githubUrl: '',
-      twitterUrl: '',
-      facebookUrl: '',
-      instagramUrl: '',
-      linkedinUrl: '',
-      youtubeUrl: '',
-    }),
-    []
-  )
-
-  const [authorData, setAuthorData] = React.useState<IAuthor>(initialState)
-
-  const { safeApiCall, loading } = useSafeApiCall()
+  const { classes } = useStyles()
 
   const handleChange = (
     e:
@@ -83,33 +86,25 @@ const CreateEditProfile: React.FC<IProps> = () => {
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-    setAuthorData((prev) => ({ ...prev, [name]: value }))
+    setAuthorDetails((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleAddAuthor = async () => {
-    if (
-      !authorData.name ||
-      !authorData.slug ||
-      !authorData.bio ||
-      !authorData.avatar
-    ) {
-      showNotification({
-        title: 'Error',
-        message: 'Please fill the required fields',
-      })
-      return
-    }
+  const handleEditAuthor = async () => {
     const res = await safeApiCall({
-      body: authorData,
-      endpoint: '/author/create',
-      notif: { id: 'create-author', show: true },
+      endpoint: '/author/edit',
+      body: { ...authorDetails },
+      notif: { id: 'edit-author-details-page', show: true },
     })
+
     if (!res) return
-    setAuthorData(initialState)
-    setAuth((prev) => ({
-      ...prev,
-      user: res.data.author._id,
-    }))
+  }
+
+  if (!authorDetails) {
+    return (
+      <PageWrapper>
+        <Loader />
+      </PageWrapper>
+    )
   }
 
   return (
@@ -120,47 +115,26 @@ const CreateEditProfile: React.FC<IProps> = () => {
           className={classes.input}
           style={{ marginBottom: '30px' }}
         >
-          Complete Author Profile
+          Edit Author Profile
         </Title>
         <SimpleGrid>
-          <Group>
-            <TextInput
-              name="name"
-              label="Enter your name"
-              value={authorData.name}
-              required
-              icon={<User />}
-              className={classes.input}
-              onChange={handleChange}
-              placeholder="Enter your Name"
-            />
-            <TextInput
-              name="slug"
-              label="Enter your pen name (unique)"
-              value={authorData.slug}
-              required
-              icon={<Webhook />}
-              className={classes.input}
-              onChange={handleChange}
-              placeholder="Enter a slug for your profile"
-            />
-          </Group>
           <Textarea
             name="bio"
             label="Describe yourself"
             minRows={5}
-            value={authorData.bio}
+            value={authorDetails.bio}
             required
             className={classes.input}
             onChange={handleChange}
             placeholder="Enter your bio (introduction)"
           />
-          <SingleSectionRender data={authorData.bio} />
+          <SingleSectionRender data={authorDetails.bio} />
+
           <Group>
             <TextInput
               name="avatar"
               label="Enter your avatar URL"
-              value={authorData.avatar}
+              value={authorDetails.avatar}
               required
               icon={<World />}
               className={classes.input}
@@ -170,7 +144,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
             <TextInput
               name="website"
               label="Enter your website URL"
-              value={authorData.website}
+              value={authorDetails.website}
               icon={<World />}
               className={classes.input}
               onChange={handleChange}
@@ -180,7 +154,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
           <TextInput
             name="linkedinUrl"
             label="Enter your linkedin username"
-            value={authorData.linkedinUrl}
+            value={authorDetails.linkedinUrl}
             icon={<BrandLinkedin />}
             className={classes.input}
             onChange={handleChange}
@@ -190,7 +164,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
             <TextInput
               name="githubUrl"
               label="Enter your github username"
-              value={authorData.githubUrl}
+              value={authorDetails.githubUrl}
               icon={<BrandGithub />}
               className={classes.input}
               onChange={handleChange}
@@ -199,7 +173,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
             <TextInput
               name="twitterUrl"
               label="Enter your twitter username"
-              value={authorData.twitterUrl}
+              value={authorDetails.twitterUrl}
               icon={<BrandTwitter />}
               className={classes.input}
               onChange={handleChange}
@@ -210,7 +184,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
             <TextInput
               name="facebookUrl"
               label="Enter your facebook profile URL"
-              value={authorData.facebookUrl}
+              value={authorDetails.facebookUrl}
               icon={<BrandFacebook />}
               className={classes.input}
               onChange={handleChange}
@@ -219,7 +193,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
             <TextInput
               name="instagramUrl"
               label="Enter your instagram username"
-              value={authorData.instagramUrl}
+              value={authorDetails.instagramUrl}
               icon={<BrandInstagram />}
               className={classes.input}
               onChange={handleChange}
@@ -229,7 +203,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
           <TextInput
             name="youtubeUrl"
             label="Enter your youtube channel URL"
-            value={authorData.youtubeUrl}
+            value={authorDetails.youtubeUrl}
             icon={<BrandYoutube />}
             className={classes.input}
             onChange={handleChange}
@@ -237,7 +211,7 @@ const CreateEditProfile: React.FC<IProps> = () => {
           />
         </SimpleGrid>
         <Group style={{ marginTop: '15px', justifyContent: 'flex-end' }}>
-          <Button onClick={handleAddAuthor} loading={loading}>
+          <Button onClick={handleEditAuthor} loading={loading}>
             Save Author Profile
           </Button>
         </Group>
@@ -246,4 +220,4 @@ const CreateEditProfile: React.FC<IProps> = () => {
   )
 }
 
-export default CreateEditProfile
+export default EditAuthorProfile

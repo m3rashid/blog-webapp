@@ -44,7 +44,6 @@ const CreateCategoryModal: React.FC<IProps> = ({ modalOpen, setModalOpen }) => {
     if (!res) return
     setModalOpen(false)
     setCategory({ name: '', slug: '' })
-    console.log(res.data)
   }
 
   return (

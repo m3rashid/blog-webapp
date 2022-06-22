@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
-import { HydratedDocument } from 'mongoose'
+import { HydratedDocument, Types } from 'mongoose'
 
 import { issueJWT } from './helpers'
 import { IUser, User } from './user.model'
@@ -8,7 +8,31 @@ import { IUser, User } from './user.model'
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
 
-  const user = await User.findOne({ $and: [{ email }, { deleted: false }] })
+  const users = await User.aggregate([
+    // @ts-ignore
+    { $match: { email: email, deleted: false } },
+    {
+      $lookup: {
+        from: 'authors',
+        localField: 'profile',
+        foreignField: '_id',
+        as: 'author',
+      },
+    },
+    { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+    {
+      $project: {
+        email: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        profile: 1,
+        password: 1,
+        author: { name: 1, slug: 1 },
+      },
+    },
+  ])
+  if (users.length === 0) throw new Error('User not found')
+  const user = users[0]
   if (!user) throw new Error('User not found')
 
   const match = await bcrypt.compare(password, user.password)
@@ -19,7 +43,35 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const getUser = async (req: Request, res: Response) => {
-  const user = await User.findById(req.userId)
+  const { userId } = req
+
+  // @ts-ignore
+  const users = await User.aggregate([
+    { $match: { _id: new Types.ObjectId(userId), deleted: false } },
+    {
+      $lookup: {
+        from: 'authors',
+        localField: 'profile',
+        foreignField: '_id',
+        as: 'author',
+      },
+    },
+    { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+    {
+      $project: {
+        email: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        profile: 1,
+        author: { name: 1, slug: 1 },
+      },
+    },
+  ])
+
+  if (users.length === 0) throw new Error('User not found')
+  const user = users[0]
+  if (!user) throw new Error('User not found')
+
   return res.status(200).json(user)
 }
 

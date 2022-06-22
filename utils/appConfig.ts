@@ -9,7 +9,7 @@ export interface IAppConfig {
 const devConfig: IAppConfig = {
   cors: {
     credentials: true,
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
     optionsSuccessStatus: 200,
   },
   errorMessage: (err: any) =>
@@ -20,7 +20,10 @@ const devConfig: IAppConfig = {
 const prodConfig: IAppConfig = {
   cors: {
     credentials: true,
-    origin: [],
+    origin: [
+      'https://cubicle.vercel.app',
+      'https://cubicle-m3rashid.vercel.app',
+    ],
     optionsSuccessStatus: 200,
   },
   errorMessage: 'Internal Server Error',

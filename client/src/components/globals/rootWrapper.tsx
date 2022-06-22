@@ -54,7 +54,7 @@ const RootWrapper: React.FC<IProps> = ({ children }) => {
             withGlobalStyles
             withNormalizeCSS
           >
-            <NotificationsProvider limit={5} position="bottom-right">
+            <NotificationsProvider limit={5} position="top-right">
               <ModalsProvider>
                 <TopHeader
                   colorScheme={colorScheme}
