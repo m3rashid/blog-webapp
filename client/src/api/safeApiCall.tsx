@@ -7,7 +7,10 @@ import { authAtom } from '../atoms/auth'
 import React from 'react'
 
 export const instance = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL:
+    process.env.NODE_ENV === 'production'
+      ? 'https://hidden-refuge-41005.herokuapp.com'
+      : 'http://localhost:5000',
 })
 
 export interface INotifState {
