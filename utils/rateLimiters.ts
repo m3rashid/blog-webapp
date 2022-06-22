@@ -1,5 +1,5 @@
-import Redis from 'ioredis'
-import RedisStore from 'rate-limit-redis'
+// import Redis from 'ioredis'
+// import RedisStore from 'rate-limit-redis'
 import rateLimit, { Options } from 'express-rate-limit'
 
 import { isProduction } from './appConfig'
@@ -17,14 +17,15 @@ const regularRateLimitConfig: Partial<Options> = {
 }
 
 const initProdRateLimiter = (rateLimitConfig: Partial<Options>) => {
-  const client = new Redis({ host: 'redis' })
-  return rateLimit({
-    ...rateLimitConfig,
-    store: new RedisStore({
-      // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-      sendCommand: (...args: string[]) => client.call(...args),
-    }),
-  })
+  // const client = new Redis({ host: 'redis' })
+  // return rateLimit({
+  //   ...rateLimitConfig,
+  //   store: new RedisStore({
+  //     // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
+  //     sendCommand: (...args: string[]) => client.call(...args),
+  //   }),
+  // })
+  rateLimit(rateLimitConfig)
 }
 
 const initDevRateLimiter = (rateLimitConfig: Partial<Options>) => {
