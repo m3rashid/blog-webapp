@@ -43,7 +43,7 @@
     "ioredis": "^5.0.6",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.4.0",
+    "mongoose": "^6.4.6",
     "rate-limit-redis": "^3.0.1",
     "uuid": "^8.3.2",
     "xss-clean": "^0.1.1"
